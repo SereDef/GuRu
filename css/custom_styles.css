@@ -1,0 +1,39 @@
+:root {
+    --genr-blue: #2c3c94;
+    --genr-lightblue: #84a8cc;
+    --background-lightblue: #d1dbe9;
+}
+
+/* Style navigation bar */
+
+.navbar {
+    background-color: white !important; /* Set navbar background to white */
+}
+.navbar .nav-link, .navbar-brand {
+    /* font-family: 'News Cycle', sans-serif; */
+    font-size: 18px;
+    color: var(--genr-lightblue) !important; /* Set link and brand text color to blue */
+}
+.navbar .nav-link:hover, .navbar-brand:hover {
+    color: var(--genr-blue) !important; /* Set hover color to dark blue */
+}
+
+/* font-family:
+body {
+    font-family: 'News Cycle', sans-serif;
+}
+*/
+
+/* Checkboxes color */
+.shiny-input-container .checkbox input[type="checkbox"] {
+  border: 1px solid var(--genr-blue);
+}
+
+.shiny-input-container .checkbox input[type="checkbox"]:checked  {
+  background-color: var(--genr-blue);
+}
+
+/* Switches color */
+.form-switch input[type="checkbox"]:checked  {
+  background-color: var(--genr-blue);
+}
