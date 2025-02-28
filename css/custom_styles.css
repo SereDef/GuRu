@@ -1,39 +1,58 @@
+/* Set up color scheme */
 :root {
     --genr-blue: #2c3c94;
     --genr-lightblue: #84a8cc;
-    --background-lightblue: #d1dbe9;
+    --background-lightblue: #e2e9f1;
 }
 
-/* Style navigation bar */
-
+/* Style main navigation bar */
 .navbar {
-    background-color: white !important; /* Set navbar background to white */
+    background-color: white !important;
 }
-.navbar .nav-link, .navbar-brand {
+#main_navbar .nav-link {
     /* font-family: 'News Cycle', sans-serif; */
     font-size: 18px;
-    color: var(--genr-lightblue) !important; /* Set link and brand text color to blue */
+    color: var(--genr-lightblue) !important;
 }
-.navbar .nav-link:hover, .navbar-brand:hover {
-    color: var(--genr-blue) !important; /* Set hover color to dark blue */
+#main_navbar .nav-item .nav-link.active {
+    color: var(--genr-blue) !important;
 }
 
-/* font-family:
+/* Style text */
+/*
 body {
     font-family: 'News Cycle', sans-serif;
 }
 */
+h6 {
+    font-weight: bold;
+    color: var(--genr-lightblue);
+}
 
-/* Checkboxes color */
+/* Style buttons */
+.guru-button {
+    background-color: var(--genr-blue);
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    border: none;
+    border-radius: 30px;
+}
+.guru-button:hover {
+    background-color: var(--genr-lightblue);
+}
+
+/* Style checkboxes */
 .shiny-input-container .checkbox input[type="checkbox"] {
-  border: 1px solid var(--genr-blue);
+    border: 1px solid var(--genr-blue);
 }
-
 .shiny-input-container .checkbox input[type="checkbox"]:checked  {
-  background-color: var(--genr-blue);
+    background-color: var(--genr-blue);
 }
 
-/* Switches color */
+/* Style switches */
 .form-switch input[type="checkbox"]:checked  {
-  background-color: var(--genr-blue);
+    background-color: var(--genr-blue);
+    border: 1px solid var(--genr-blue);
 }

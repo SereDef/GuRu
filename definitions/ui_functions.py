@@ -1,96 +1,52 @@
 from shiny import ui
-from pathlib import Path
 
-from GuRu.definitions.style_sheet import guru_colors
-
-here = Path(__file__).parent
-
-css_file = here / '..' / 'css' / 'custom_styles.css'
-
-def timepoint_selector(id, time_options='stratified'):
-
-    if time_options == 'simple':
-        time_choices = {'All': 'All',
-                        'Pre': 'Pregnancy',
-                        '2m': '2 months',
-                        '6m': '6 months',
-                        '1y': '1 year',
-                        '2y': '2 years',
-                        '3y': '3 years',
-                        '4y': '4 years',
-                        '6y': '6 years',
-                        '8y': '8 years',
-                        '10y': '10 years',
-                        '14y': '14 years',
-                        '18y': '18 years'}
-    else:
-        time_choices = {'All': 'All',
-                        'Pregnancy': {'20w': '1st trimester',
-                                      '25w': '2nd trimester',
-                                      '30w': '3rd trimester'},
-                        'Infancy': {'0': 'birth',
-                                    '2m': '2 months',
-                                    '6m': '6 months'},
-                        'Pre-school': {'1y': '1 year',
-                                       '2y': '2 years',
-                                       '3y': '3 years'},
-                        'School-age': {'6y': '6 years',
-                                       '10y': '10 years'},
-                        'Adolescence': {'14y': '14 years',
-                                        '18y': '18 years'}}
-
-    return ui.div(ui.input_selectize(id=id, label=ui.h6('Timepoint(s)'),
-                              choices=time_choices,
-                              selected='All',
-                              multiple=True),
-                  # ui.input_slider(id='slider1', label='', min=-1, max=18, value=[-1, 18], post=' years')
-                  )
-
-# Cannot input custom labels for now
-# timepoint_slider = ui.input_slider(id='timepoint_slider', label='Timepoint: ',
-#                                        min=-1, max=20, value=[-1, 20], step=1),
+from definitions.terms_and_styles import guru_colors, user_input_panel_style, \
+    subject_choices, reporter_choices, \
+    overview_time_choices, variable_time_choices
 
 
-def subject_selector(id):
+def timepoint_selector(id, time_options):
+    # Cannot input custom labels into a slider, so I use a selection menu (for now)
 
-    subject_choices = {'child': 'Child',
-                       'mother': 'Mother / main caregiver',
-                       'father': 'Father / partner'}
-                       # 'family': 'Family'}
-
-    return ui.input_checkbox_group(id=id, label=ui.h6('Info about:'),
-                                   choices=subject_choices,
-                                   selected=list(subject_choices.keys()))
-
-
-def reporter_selector(id):
-
-    reporter_choices = {'child': 'Child',
-                        'mother': 'Mother / main caregiver',
-                        'father': 'Father / partner',
-                        'teacher': 'Teacher'}
-
-    return ui.input_checkbox_group(id=id, label=ui.h6('Reported by:'),
-                                   choices=reporter_choices,
-                                   selected=list(reporter_choices.keys())),
+    return ui.div(ui.h6('Time point(s)'),
+                  ui.input_switch(id=f'{id}_switch_time', label='All available', value=True),
+                  ui.input_selectize(id=f'{id}_selected_time', label='',
+                                     choices=time_options,
+                                     selected=list(time_options.keys()),
+                                     multiple=True,
+                                     width='95%'))
 
 
-def search_bar():
+def checkbox_selector(id, label, options_dict):
 
-    search_domains = {'concept': 'Categories',
-                      'measure': 'Measures',
+    return ui.input_checkbox_group(id=id, label=ui.h6(label),
+                                   choices=options_dict,
+                                   selected=list(options_dict.keys()))
+
+
+def search_panel(id):
+
+    search_domains = {'Category': 'Categories',
+                      'Measure': 'Measures',
                       'description': 'Descriptions'}
 
     search_group = ui.div(
-        ui.input_text('search_terms', 'Search for:', '', width='100%'),
+        ui.input_text(id=f'{id}_search_terms',
+                      label=ui.h6('Search'),
+                      value='',
+                      width='100%'),
         ui.layout_columns(
-            ui.input_checkbox_group(id='search_domains', label='Search in:',
+            ui.input_switch(id=f'{id}_search_case_sensitive',
+                            label='Case sensitive',
+                            value=False),
+            ui.input_checkbox_group(id=f'{id}_search_domains',
+                                    label='Search in:',
                                     choices=search_domains,
                                     selected=list(search_domains.keys())),
-            ui.input_switch('case_sensitive', 'Case sensitive', False),
-            ui.input_action_button('go_search', 'Search'),
-            gap='10px'
-        )
+            ui.input_action_button(id=f'{id}_search_button',
+                                   label='Search',
+                                   class_='guru-button'),
+            gap='10px')
     )
 
     return search_group
@@ -101,20 +57,21 @@ def search_bar():
 
 def overview_page(tab_name):
 
-    return ui.nav_panel('Overview',
+    return ui.nav_panel('Measures overview',
                         # ui.include_css(css_file),
                         # Selection pane
                         ui.layout_columns(
-                            timepoint_selector(id='overview_selected_time', time_options='simple'),
-                            subject_selector(id='overview_selected_subjects'),
-                            reporter_selector(id='overview_selected_reporter'),
-                            search_bar(),
-                            col_widths=(2, 2, 2, 6),  # negative numbers for empty spaces
-                            gap='30px',
-                            style=f'padding-top: 20px; padding-right: 30px; padding-left: 30px; ' \
-                                  f'border-radius: 30px; ' \
-                                  f'background-color: {guru_colors["background-lightblue"]}'
-                        ),
+                            timepoint_selector(id='overview', time_options=overview_time_choices),
+                            checkbox_selector(id='overview_selected_subjects',
+                                              label='Information about:',
+                                              options_dict=subject_choices),
+                            checkbox_selector(id='overview_selected_reporters',
+                                              label='Reported by:',
+                                              options_dict=reporter_choices),
+                            search_panel(id='overview'),
+                            col_widths=(3, 2, 2, 5),  # negative numbers for empty spaces
+                            gap='15px',
+                            style=user_input_panel_style),
                         # Output
                         ui.output_data_frame(id='overview_df'),
                         ui.output_ui(id='overview_selected_rows'),
@@ -123,13 +80,17 @@ def overview_page(tab_name):
 
 
 def variable_page(tab_name):
-    return ui.nav_panel('Variable table',
+    return ui.nav_panel('Variable metadata',
                         # Selection pane
                         ui.layout_columns(
-                            subject_selector(id='variable_selected_subject'),
-                            reporter_selector(id='variable_selected_reporter'),
-                            timepoint_selector(id='variable_selected_time'),
-                            col_widths=(2, 2, 3, -5),  # negative numbers for empty spaces
+                            timepoint_selector(id='variable', time_options=variable_time_choices),
+                            checkbox_selector(id='variable_selected_subjects',
+                                              label='Information about:',
+                                              options_dict=subject_choices),
+                            checkbox_selector(id='variable_selected_reporters',
+                                              label='Reported by:',
+                                              options_dict=reporter_choices),
+                            col_widths=(3, 2, 2, -5),  # negative numbers for empty spaces
                             gap='30px'
                         ),
                         # Output

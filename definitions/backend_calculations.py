@@ -1,8 +1,7 @@
 import pandas as pd
-import faicons as fa
 from shiny import ui
 
-from GuRu.definitions.style_sheet import guru_colors
+from definitions.terms_and_styles import guru_colors, overview_icon_dict
 
 # ======================================================================================================================
 # Read, cleanup & style OVERVIEW TABLE
@@ -15,14 +14,6 @@ overview_table, q_description = pd.read_excel('assets/content_questionnaires.xls
 # overview_table_grouped = pd.DataFrame(overview_table[timepoints].values, index=index, columns=timepoints)
 
 # Replace all reporter-subject information with the corresponding icons
-icon_dict = {'mother-self': ui.span(fa.icon_svg('square'), style=f'color: {guru_colors["mother-darkshade"]};'),
-             'mother-child': ui.span(fa.icon_svg('square'), style=f'color: {guru_colors["child-darkshade"]};'),
-             'partner-self': ui.span(fa.icon_svg('diamond'), style=f'color: {guru_colors["father-darkshade"]};'),
-             'partner-child': ui.span(fa.icon_svg('diamond'), style=f'color: {guru_colors["child-darkshade"]};'),
-             'child-self': ui.span(fa.icon_svg('circle'), style=f'color: {guru_colors["child-darkshade"]};'),
-             'teacher-child': ui.span(fa.icon_svg('star-of-life'), style=f'color: {guru_colors["child-darkshade"]};')
-             }
-
 timepoint_cols = [c for c in overview_table.columns if c not in ['id', 'concept', 'measure']]
 
 for col in timepoint_cols:
@@ -32,7 +23,7 @@ for col in timepoint_cols:
     icon_recoded = list()
     for value in overview_table[col]:
         if pd.notna(value) and value != '':
-            icons = [icon_dict[v] for v in value.split(' ')]
+            icons = [overview_icon_dict[v] for v in value.split(' ')]
             icon_recoded.append(ui.span(*icons))
         else:
             icon_recoded.append('')
@@ -57,9 +48,16 @@ for col in timepoint_cols:
 
 
 # Server side ---------------------------------------------
+def overview_table_height(nrows):
+    if nrows == 0:
+        return '70px'
+
+    return f'{int(min(500, 20 + 50 * nrows))}px'
 
 
 def overview_table_style(nrows, ncols):
+    if nrows == 0:
+        return None
 
     custom_table_style = [
                 # background color rows
@@ -81,8 +79,9 @@ def overview_table_style(nrows, ncols):
     return custom_table_style
 
 
-def subset_overview_table(selected_timepoints,
+def filter_overview_table(selected_timepoints,
                           selected_subjects,
+                          selected_reporters,
                           table=overview_table):
 
     overview_columns = {
@@ -105,45 +104,70 @@ def subset_overview_table(selected_timepoints,
         }
 
     # User selected time point ----------------------------
-    if selected_timepoints not in [('All',), 'None', None] or len(selected_timepoints) == 0:
+    if (selected_timepoints is None) or \
+            (len(selected_timepoints) == 0) or \
+            (len(selected_subjects) == 0) or \
+            (len(selected_reporters) == 0):
+        # Return an empty table
+        empty_table = pd.DataFrame(columns=overview_columns)
+
+        return empty_table
+
+    times = [k for k in overview_columns.keys() if k not in ['concept', 'measure']]  # all avalable times
+
+    if len(selected_timepoints) < len(times):
         times = list(selected_timepoints)
-        if 'All' in times:
-            times.remove('All')
         column_subset = dict((k, overview_columns[k]) for k in overview_columns.keys()
                              if k in ['concept', 'measure']+times)
     else:
-        times = [k for k in overview_columns.keys() if k not in ['concept', 'measure']]
         column_subset = overview_columns
 
-    # User selected subject ---------------------------------
-    if len(selected_subjects) < 3:
-        search_terms = list()
-        if 'child' in selected_subjects: search_terms.extend(['child-', '-child'])
-        if 'mother' in selected_subjects: search_terms.append('mother-self')
-        if 'father' in selected_subjects: search_terms.append('partner-self')
+    # User selected subject and reporter ---------------------------------
+    if (len(selected_subjects) < 3) or (len(selected_reporters) < 4):
+        search_codes = list()
+        if 'child' in selected_subjects:
+            if 'child' in selected_reporters: search_codes.append('child-self')
+            if 'mother' in selected_reporters: search_codes.append('mother-child')
+            if 'father' in selected_reporters: search_codes.append('partner-child')
+            if 'teacher' in selected_reporters: search_codes.append('teacher-child')
+        if ('mother' in selected_subjects) & ('mother' in selected_reporters):
+            search_codes.append('mother-self')
+        if ('father' in selected_subjects) & ('father' in selected_reporters):
+            search_codes.append('partner-self')
 
         table = table[table[[f'{t}_txt' for t in times]].apply(
-            lambda row: row.astype(str).str.contains('|'.join(search_terms)).any(), axis=1)]
-
-    # User selected reporter ---------------------------------
-    reporter_choices = {'child': 'Child',
-                        'mother': 'Mother / main caregiver',
-                        'father': 'Father / partner',
-                        'teacher': 'Teacher'}
+            lambda row: row.astype(str).str.contains('|'.join(search_codes)).any(), axis=1)]
 
     # Rename and subset columns
     table_clean = table.rename(columns=column_subset)[[*column_subset.values()]]
-    # Remove empty rows
+
+    # Remove any leftover empty rows
     table_clean = table_clean[table_clean[list(column_subset.values())[2:]].apply(
         lambda row: any(row.values != ''), axis=1)]
 
-    nrow, ncol = table_clean.shape
-    if nrow == 0:
-        table_style = None
-    else:
-        table_style = overview_table_style(nrow, ncol)
+    return table_clean  # , table_style, table_height
 
-    return table_clean, table_style
+
+def search_overview_table(table,
+                          search_terms,
+                          search_domains,
+                          case_sensitive):
+    if len(search_domains) == 0:
+        return table
+
+    # Add description column to the table
+    if 'description' in search_domains:
+        table = table.merge(q_description[['measure', 'description']], how='left',
+                            left_on='Measure', right_on='measure')
+
+    table_clean = table[table[list(search_domains)].apply(
+        lambda row: row.astype(str).str.contains('|'.join(search_terms), case=case_sensitive).any(), axis=1)]
+
+    if 'description' in search_domains:
+        table_clean = table_clean.drop('description', axis=1)
+        table_clean = table_clean.drop('measure', axis=1)
+
+    return table_clean
 
 
 def display_measure_description(selected_measures):
