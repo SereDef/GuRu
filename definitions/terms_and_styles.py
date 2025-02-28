@@ -4,6 +4,7 @@ import faicons as fa
 guru_colors = {'background-lightblue': '#e2e9f1',
                'background-lightgrey': '#F2F2F2',
                'genR-blue': '#2c3c94',
+               'genR-lightblue': '#84a8cc',
                'mother-lightshade': '#ffeae5',
                'mother-darkshade': '#A32219',
                'father-lightshade': '#E9FFFB',  # e5f4ff # lightblue

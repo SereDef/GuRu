@@ -52,7 +52,7 @@ def overview_table_height(nrows):
     if nrows == 0:
         return '70px'
 
-    return f'{int(min(500, 20 + 50 * nrows))}px'
+    return f'{int(min(420, 20 + 50 * nrows))}px'
 
 
 def overview_table_style(nrows, ncols):
@@ -67,10 +67,10 @@ def overview_table_style(nrows, ncols):
                 #  'style': {'background-color': 'white'}},
                 # concept column
                 {'cols': [0],
-                 'style': {'max-width': '150px'}},
+                 'style': {'min-width': '215px'}},
                 # measure column
                 {'cols': [1],
-                 'style': {'min-width': '450px', 'font-weight': 'bold'}},
+                 'style': {'min-width': '480px', 'font-weight': 'bold'}},
                 # timepoint & n_observed columns
                 {'cols': list(range(2, ncols)),
                  'style': {'max-width': '50px', 'text-align': 'center'}},
@@ -182,7 +182,7 @@ def display_measure_description(selected_measures):
 
     vars_info = '<br><br>'.join(vars_info_list)
 
-    return '<br><br>' + vars_info
+    return vars_info
 
 
 

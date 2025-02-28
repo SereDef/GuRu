@@ -6,8 +6,8 @@ from definitions.backend_calculations import \
     display_measure_description, \
     metadata_table_clean, metadata_table_style, display_variable_info
 
-from definitions.terms_and_styles import overview_time_choices
-from definitions.ui_functions import overview_page, variable_page
+from definitions.terms_and_styles import overview_time_choices, overview_icon_dict
+from definitions.ui_functions import overview_page, variable_page, datawiki_page, publications_page
 
 here = Path(__file__).parent
 
@@ -20,8 +20,8 @@ app_ui = ui.page_fluid(
         # ui.nav_spacer(),
         overview_page(tab_name='overview_page'),
         variable_page(tab_name='variable_page'),
-        ui.nav_panel("DataWiki map", 'TODO'),
-        ui.nav_panel("Publications", 'TODO'),
+        datawiki_page(tab_name='datawiki_page'),
+        publications_page(tab_name='publications_page'),
 
         id='main_navbar',
         selected='overview_page',
@@ -82,19 +82,28 @@ def server(input, output, session):
 
         return render.DataTable(data=_filter_overview_table(),
                                 selection_mode='rows',
-                                width='99%',
+                                width='100%',
                                 height=table_height,
                                 styles=table_style)
 
     @render.ui
-    def overview_selected_rows():
+    def overview_legend():
+        return ui.markdown(f'&emsp;'
+                           f'{overview_icon_dict["mother-self"]} Mother self-report &emsp;'
+                           f'{overview_icon_dict["partner-self"]} Partner self-report &emsp;'
+                           f'{overview_icon_dict["child-self"]} Child self-report &emsp;'
+                           f'{overview_icon_dict["mother-child"]} Mother about the child &emsp;'
+                           f'{overview_icon_dict["partner-child"]} Partner about the child &emsp;'
+                           f'{overview_icon_dict["teacher-child"]} Teacher about child<br>'
+                           f'&emsp;Click on a row to display more information about the measure selected.')
+
+    @reactive.effect
+    def _():
         if overview_df.data().shape[0] > 0:
             selected_measures = list(overview_df.data_view(selected=True)["Measure"])
             if len(selected_measures) > 0:
-                return ui.markdown(f'Measures selected: {display_measure_description(selected_measures)}')
-
-        return ui.markdown(f'No measures selected. Click on a row above to display more information about the '
-                           f'measure selected.')
+                ui.notification_show(ui.markdown(display_measure_description(selected_measures)),
+                                     duration=10)
 
     @render.data_frame
     def variable_df():
