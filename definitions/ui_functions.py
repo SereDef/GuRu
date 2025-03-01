@@ -5,6 +5,8 @@ from definitions.terms_and_styles import guru_colors, user_input_panel_style, \
     subject_choices, reporter_choices, \
     overview_time_choices, variable_time_choices
 
+# Individual component groups ==========================================================================================
+
 
 def timepoint_selector(id, time_options):
     # Cannot input custom labels into a slider, so I use a selection menu (for now)
@@ -56,8 +58,9 @@ def search_panel(id):
 
     return search_group
 
+# Tabs and pages =======================================================================================================
 
-# ======================================================================================================================
+
 def overview_questionnaire_tab():
     return ui.nav_panel(
         'Questionnaires',
@@ -92,26 +95,43 @@ def overview_page(tab_name):
                         icon=icon_svg('binoculars'),
                         value=tab_name)
 
+# ======================================================================================================================
+
+
+def variable_questionnaire_tab():
+    return ui.nav_panel(
+        'Questionnaires',
+        # Selection pane
+        ui.layout_columns(
+            timepoint_selector(id='variable', time_options=variable_time_choices),
+            checkbox_selector(id='variable_selected_subjects',
+                              label='Information about:',
+                              options_dict=subject_choices),
+            checkbox_selector(id='variable_selected_reporters',
+                              label='Reported by:',
+                              options_dict=reporter_choices),
+            # search_panel(id='variable'),
+            col_widths=(3, 2, 2, 5),  # negative numbers for empty spaces
+            gap='15px',
+            style=user_input_panel_style),
+        # Output
+        ui.output_data_frame(id='variable_df'),
+        ui.output_ui(id='variable_selected_rows'),
+    )
+
 
 def variable_page(tab_name):
     return ui.nav_panel(' Variable metadata',
-                        # Selection pane
-                        ui.layout_columns(
-                            timepoint_selector(id='variable', time_options=variable_time_choices),
-                            checkbox_selector(id='variable_selected_subjects',
-                                              label='Information about:',
-                                              options_dict=subject_choices),
-                            checkbox_selector(id='variable_selected_reporters',
-                                              label='Reported by:',
-                                              options_dict=reporter_choices),
-                            col_widths=(3, 2, 2, -5),  # negative numbers for empty spaces
-                            gap='30px'
-                        ),
-                        # Output
-                        ui.output_data_frame(id='variable_df'),
-                        ui.output_ui(id='variable_selected_rows'),
+                        ui.navset_pill(
+                            ui.nav_spacer(),
+                            variable_questionnaire_tab(),
+                            ui.nav_panel('Hands-on measurements', 'TODO'),
+                            ui.nav_panel('Other', 'TODO'),
+                            id='variable_navbar'),
                         icon=icon_svg('table'),
                         value=tab_name)
+
+# ======================================================================================================================
 
 
 def datawiki_page(tab_name):
@@ -119,6 +139,8 @@ def datawiki_page(tab_name):
                         'TODO',
                         icon=icon_svg('book-atlas'),
                         value=tab_name)
+
+# ======================================================================================================================
 
 
 def publications_page(tab_name):
