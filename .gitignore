@@ -1,2 +1,5 @@
 __pycache__/
 definitions/__pycache__/
+
+.DS_Store
+definitions/.DS_Store

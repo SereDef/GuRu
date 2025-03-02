@@ -113,7 +113,7 @@ def filter_overview_table(selected_timepoints,
 
         return empty_table
 
-    times = [k for k in overview_columns.keys() if k not in ['concept', 'measure']]  # all avalable times
+    times = [k for k in overview_columns.keys() if k not in ['concept', 'measure']]  # all available times
 
     if len(selected_timepoints) < len(times):
         times = list(selected_timepoints)
@@ -250,8 +250,68 @@ def pill_style(table, var, var_pos):
 subject_styler = pill_style(metadata_table, 'subject', 3)
 reporter_styler = pill_style(metadata_table, 'reporter', 5)
 
-metadata_table_clean = metadata_table.rename(columns=display_columns)[[*display_columns.values()]]
+# metadata_table_clean = metadata_table.rename(columns=display_columns)[[*display_columns.values()]]
 metadata_table_style = custom_styles+subject_styler+reporter_styler
+
+
+def filter_variable_table(# selected_timepoints,
+                          selected_subjects,
+                          selected_reporters,
+                          table=metadata_table):
+
+    display_columns = {'var_name': 'Variable name',   # 0
+                       'var_label': 'Variable label', # 1
+                       'timepoint': 'Timepoint(s)',   # 2
+                       'subject': 'Subject',          # 3
+                       'n_observed': 'N observed',    # 4
+                       'reporter': 'Reporter',        # 5
+                       'questionnaire': 'Reference',  # 6
+                       'orig_file': 'File name(s)'}   # 7
+
+    # User selected time point ----------------------------
+    # if (selected_timepoints is None) or (len(selected_timepoints) == 0) or \
+    if (len(selected_subjects) == 0) or (len(selected_reporters) == 0):
+        # Return an empty table
+        # TODO: empty timepoints could be meaningful?
+        empty_table = pd.DataFrame(columns=display_columns.values())
+
+        return empty_table
+
+    # TODO subset time
+
+    # User selected subject and reporter ---------------------------------
+    if len(selected_subjects) < 3:
+        table = table.loc[table['subject'].str.contains('|'.join(list(selected_subjects)), na=False), ]
+
+    if len(selected_reporters) < 4:
+        table = table.loc[table['reporter'].str.contains('|'.join(list(selected_reporters)), na=False), ]
+
+    # Rename and subset columns
+    table_clean = table.rename(columns=display_columns)[[*display_columns.values()]]
+
+    return table_clean
+
+
+def search_overview_table(table,
+                          search_terms,
+                          search_domains,
+                          case_sensitive):
+    if len(search_domains) == 0:
+        return table
+
+    # Add description column to the table
+    if 'description' in search_domains:
+        table = table.merge(q_description[['measure', 'description']], how='left',
+                            left_on='Measure', right_on='measure')
+
+    table_clean = table[table[list(search_domains)].apply(
+        lambda row: row.astype(str).str.contains('|'.join(search_terms), case=case_sensitive).any(), axis=1)]
+
+    if 'description' in search_domains:
+        table_clean = table_clean.drop('description', axis=1)
+        table_clean = table_clean.drop('measure', axis=1)
+
+    return table_clean
 
 
 def display_variable_info(row_ids, table=metadata_table):
