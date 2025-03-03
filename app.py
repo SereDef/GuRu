@@ -26,7 +26,7 @@ app_ui = ui.page_fluid(
         publications_page(tab_name='publications_page'),
 
         id='main_navbar',
-        selected='overview_page',
+        selected='variable_page',  # 'overview_page',
         position='fixed-top',  # Navbar is pinned at the top
         bg='white',
         fillable=True,

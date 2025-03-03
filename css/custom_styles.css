@@ -10,7 +10,6 @@
     background-color: white !important;
 }
 #main_navbar .nav-link {
-    /* font-family: 'News Cycle', sans-serif; */
     font-size: 17px;
     color: var(--genr-lightblue) !important;
 }
@@ -32,13 +31,6 @@
       background-color: var(--background-lightblue);
       color: var(--genr-blue);
       font-weight: bold;
-}
-
-.guru-pills {
-    font-weight: bold;
-}
-.guru-pills:hover {
-    color: var(--background-lightblue) !important;
 }
 
 /* Style text */
@@ -69,10 +61,21 @@ h6 {
 /* Style checkboxes */
 .shiny-input-container .checkbox input[type="checkbox"] {
     border: 1px solid var(--genr-blue);
+    margin-left: 7px;
 }
-.shiny-input-container .checkbox input[type="checkbox"]:checked  {
+.shiny-input-container .checkbox input[type="checkbox"]:checked {
     background-color: var(--genr-blue);
 }
+
+/* Style radio-buttons */
+.shiny-input-container .radio input[type="radio"] {
+    border: 1px solid var(--genr-blue);
+    margin-left: 7px;
+}
+.shiny-input-container .radio input[type="radio"]:checked {
+    background-color: var(--genr-blue);
+}
+
 
 /* Style switches */
 .form-switch input[type="checkbox"]:checked  {
@@ -86,4 +89,9 @@ h6 {
     position: fixed;
     left: 50%;
     transform: translateX(-60%);
+}
+
+.form-select {
+    background-color: var(--genr-lightblue);
+    border: 1px solid var(--genr-lightblue);
 }
