@@ -1,7 +1,7 @@
 from shiny import ui
 from faicons import icon_svg
 
-from definitions.backend_calculations import metadata_table
+from definitions.variable_page_backend import metadata_table
 from definitions.terms_and_styles import guru_colors
 
 
@@ -114,7 +114,7 @@ def search_panel(page_id):
 def file_selector(page_id):
     file_options = [f for f in metadata_table.orig_file.unique() if ';' not in f]
 
-    return ui.input_selectize(id=f'{page_id}_selected_file',
+    return ui.input_selectize(id=f'{page_id}_selected_files',
                               label=ui.tooltip(ui.h6('File(s) ', icon_svg('circle-info')),
                                                'Type or select a file name. When none is selected, all files are shown.',
                                                id=f'{page_id}_files_info_tooltip',

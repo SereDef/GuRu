@@ -2,7 +2,7 @@ from shiny import ui, render, reactive
 
 from definitions.terms_and_styles import overview_time_choices, overview_icon_dict
 
-from definitions.backend_calculations import filter_overview_table, search_overview_table, \
+from definitions.overview_page_backend import filter_overview_table, search_overview_table, \
     overview_table_style, overview_table_height, display_measure_description
 
 
@@ -36,9 +36,11 @@ def overview_reactivity(input, output):
     async def _search_overview_table():
         search_terms = input.overview_search_terms().split(';')
 
+        variable_search_domains = list(input.overview_search_domains1()) + list(input.overview_search_domains2())
+
         search_results_table = search_overview_table(table=_filter_overview_table(),
                                                      search_terms=search_terms,
-                                                     search_domains=input.overview_search_domains(),
+                                                     search_domains=variable_search_domains,
                                                      case_sensitive=input.overview_search_case_sensitive())
 
         await overview_df.update_data(search_results_table)

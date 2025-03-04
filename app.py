@@ -1,13 +1,15 @@
-from shiny import App, ui, render, reactive
+from shiny import App, ui
 from pathlib import Path
 
 from definitions.overview_page_ui import overview_page
 from definitions.variable_page_ui import variable_page
-from definitions.datawiki_page_ui import datawiki_page
-from definitions.publications_page_ui import publications_page
 
 from definitions.overview_page_server import overview_reactivity
 from definitions.variable_page_server import variable_reactivity
+
+from definitions.datawiki_page_ui import datawiki_page, datawiki_reactivity
+
+from definitions.publications_page_ui import publications_page
 
 from definitions.terms_and_styles import variable_time_choices
 
@@ -41,6 +43,7 @@ def server(input, output, session):
 
     overview_reactivity(input, output)
     variable_reactivity(input, output)
+    datawiki_reactivity(input, output)
 
 
 app = App(app_ui, server, static_assets=logo_img)

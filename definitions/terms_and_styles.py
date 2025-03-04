@@ -7,7 +7,7 @@ guru_colors = {'background-lightblue': '#e2e9f1',
                'genR-lightblue': '#84a8cc',
                'mother-lightshade': '#ffeae5',
                'mother-darkshade': '#A32219',
-               'father-lightshade': '#E9FFFB',  # e5f4ff # lightblue
+               'father-lightshade': '#e5f4ff',  # '#E9FFFB',
                'father-darkshade': '#5B9F84',
                'child-lightshade': '#fff292',
                'child-darkshade': '#F5C242',
