@@ -2,7 +2,7 @@ from shiny import ui
 from faicons import icon_svg
 
 from definitions.ui_elements import timepoint_selector, checkbox_selector, file_selector, search_panel
-from definitions.terms_and_styles import guru_colors, user_input_panel_style, \
+from definitions.terms_and_styles import guru_colors, user_input_panel_style, banner_panel, \
     subject_choices, reporter_choices, variable_time_choices
 
 # Individual component groups ==========================================================================================
@@ -39,6 +39,7 @@ def variable_questionnaire_tab():
 
 def variable_page(tab_name):
     return ui.nav_panel(' Variable metadata',
+                        banner_panel,
                         ui.navset_pill(
                             ui.nav_spacer(),
                             variable_questionnaire_tab(),

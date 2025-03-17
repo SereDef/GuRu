@@ -2,12 +2,11 @@ from shiny import ui
 from faicons import icon_svg
 
 from definitions.ui_elements import timepoint_selector, checkbox_selector, search_panel
-from definitions.terms_and_styles import guru_colors, user_input_panel_style, \
+from definitions.terms_and_styles import guru_colors, user_input_panel_style, banner_panel, \
     subject_choices, reporter_choices, overview_time_choices
 
 # Individual component groups ==========================================================================================
 page_id = 'overview'
-
 
 def overview_questionnaire_tab():
     return ui.nav_panel(
@@ -36,6 +35,7 @@ def overview_questionnaire_tab():
 def overview_page(tab_name):
 
     return ui.nav_panel(' Data overview',
+                        banner_panel,
                         ui.navset_pill(
                             ui.nav_spacer(),
                             overview_questionnaire_tab(),

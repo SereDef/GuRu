@@ -1,5 +1,5 @@
 from shiny import ui
-import faicons as fa
+from faicons import icon_svg
 
 guru_colors = {'background-lightblue': '#e2e9f1',
                'background-lightgrey': '#F2F2F2',
@@ -13,16 +13,23 @@ guru_colors = {'background-lightblue': '#e2e9f1',
                'child-darkshade': '#F5C242',
                }
 
+banner_panel = ui.div(ui.span(icon_svg('circle-exclamation'), style='color: #A32219'), 
+                      ui.markdown('&ensp;*This app is currently <ins>under development</ins>! ' \
+                                  'Please check that the information is correct before reporting it. ' \
+                                  'If you spot any errors or missing information, please let us know using GitHub issues or email.*'), 
+                      style='display: inline-flex; padding-bottom: 0px; padding-top: 15px; padding-left: 20px; border-radius: 30px; ' \
+                            'font-size: 17px; color: #A32219; background-color: #ffeae5; border: 1px solid #A32219;')
+
 user_input_panel_style = f'padding-top: 20px; padding-right: 30px; padding-left: 30px; ' \
                          f'border-radius: 30px; ' \
                          f'background-color: {guru_colors["background-lightblue"]}'
 
-overview_icon_dict = {'mother-self': ui.span(fa.icon_svg('square'), style=f'color: {guru_colors["mother-darkshade"]};'),
-                      'mother-child': ui.span(fa.icon_svg('square'), style=f'color: {guru_colors["child-darkshade"]};'),
-                      'partner-self': ui.span(fa.icon_svg('diamond'), style=f'color: {guru_colors["father-darkshade"]};'),
-                      'partner-child': ui.span(fa.icon_svg('diamond'), style=f'color: {guru_colors["child-darkshade"]};'),
-                      'child-self': ui.span(fa.icon_svg('circle'), style=f'color: {guru_colors["child-darkshade"]};'),
-                      'teacher-child': ui.span(fa.icon_svg('star-of-life'), style=f'color: {guru_colors["child-darkshade"]};')
+overview_icon_dict = {'mother-self': ui.span(icon_svg('square'), style=f'color: {guru_colors["mother-darkshade"]};'),
+                      'mother-child': ui.span(icon_svg('square'), style=f'color: {guru_colors["child-darkshade"]};'),
+                      'partner-self': ui.span(icon_svg('diamond'), style=f'color: {guru_colors["father-darkshade"]};'),
+                      'partner-child': ui.span(icon_svg('diamond'), style=f'color: {guru_colors["child-darkshade"]};'),
+                      'child-self': ui.span(icon_svg('circle'), style=f'color: {guru_colors["child-darkshade"]};'),
+                      'teacher-child': ui.span(icon_svg('star-of-life'), style=f'color: {guru_colors["child-darkshade"]};')
                       }
 
 subject_choices = {'child': 'Child',

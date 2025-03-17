@@ -4,7 +4,7 @@ from faicons import icon_svg
 
 # from definitions.ui_elements import file_selector
 
-from definitions.terms_and_styles import user_input_panel_style
+from definitions.terms_and_styles import user_input_panel_style, banner_panel
 
 
 # ==========================================================================================
@@ -56,6 +56,7 @@ def datatype_selector(page_id):
 
 def datawiki_page(tab_name):
     return ui.nav_panel(" DataWiki map",
+                        banner_panel,
                         # Selection pane
                         ui.div(
                             ui.layout_columns(
