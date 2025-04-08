@@ -1,4 +1,4 @@
-from shiny import ui, render, reactive
+from shiny import ui, module, render, reactive
 
 from definitions.terms_and_styles import overview_time_choices, overview_icon_dict
 
@@ -6,7 +6,8 @@ from definitions.overview_page_backend import filter_overview_table, search_over
     overview_table_style, overview_table_height, display_measure_description
 
 
-def overview_reactivity(input, output):
+@module.server
+def overview_reactivity(input, output, session):
 
     # Update the overview UI input --------------------------------------------------
     @reactive.effect
@@ -75,5 +76,6 @@ def overview_reactivity(input, output):
         if overview_df.data().shape[0] > 0:
             selected_measures = list(overview_df.data_view(selected=True)["Measure"])
             if len(selected_measures) > 0:
-                ui.notification_show(ui.markdown(display_measure_description(selected_measures)),
+                ui.notification_show(
+                    ui.markdown(display_measure_description(selected_measures)),
                                      duration=10)

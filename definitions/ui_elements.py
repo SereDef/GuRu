@@ -47,7 +47,7 @@ def multicol_checkbox_selector(page_id, item_id, multicol_options_dict):
 
 def search_panel(page_id):
 
-    if page_id == 'overview':
+    if 'overview' in page_id:
 
         search_textbox = ui.input_text(id=f'{page_id}_search_terms',
                                        label=ui.tooltip(ui.h6('Search ', icon_svg('circle-info')),
@@ -63,7 +63,7 @@ def search_panel(page_id):
 
         regex_switch = None
 
-    elif page_id == 'variable':
+    elif 'variable' in page_id:
 
         search_textbox = ui.layout_columns(
             ui.input_select(id=f'{page_id}_search_mode',
