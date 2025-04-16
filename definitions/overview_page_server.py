@@ -1,14 +1,48 @@
 from shiny import ui, module, render, reactive
 
-from definitions.terms_and_styles import overview_time_choices, overview_icon_dict
+from definitions.terms_and_styles import overview_icon_dict
 
-from definitions.overview_page_backend import filter_overview_table, search_overview_table, \
+from definitions.overview_page_backend import q_table, m_table, \
+    filter_overview_table, search_overview_table, \
     overview_table_style, overview_table_height, display_measure_description
 
 
 @module.server
-def overview_reactivity(input, output, session):
+def overview_reactivity(input, output, session, label = 'Questionnaires'):
 
+    if label == 'Questionnaires':
+
+        time_choices = ['Prenatal', '2 months', '6 months', 
+                         '1 year', '1.5 years', '2 years', '2.5 years', '3 years', 
+                         '4 years', '6 years', '8 years', '10 years', 
+                         '14 years', '18 years']
+         
+        legend = ui.markdown(f'&emsp;'
+                    f'{overview_icon_dict["mother-self"]} Mother self-report &emsp;&emsp;'
+                    f'{overview_icon_dict["partner-self"]} Partner self-report &emsp;&emsp;'
+                    f'{overview_icon_dict["child-self"]} Child self-report &emsp;&emsp;'
+                    f'{overview_icon_dict["mother-child"]} Mother about the child &emsp;&emsp;'
+                    f'{overview_icon_dict["partner-child"]} Partner about the child &emsp;&emsp;'
+                    f'{overview_icon_dict["teacher-child"]} Teacher about child<br>'
+                    f'&emsp;<span style="color:grey">Click on any row below to display '
+                    f'more information about the measure selected.</span>')
+    else:
+
+        time_choices = ['Prenatal', 'Birth', '6 weeks', '3 months', '6 months', 
+                        '1 year', '3 years', 
+                        '4 years', '6 years', '10 years', 
+                        '14 years', '18 years']
+        
+        legend = ui.markdown(f'&emsp;'
+                    f'{overview_icon_dict["[mother]"]} Mother &emsp;&emsp;'
+                    f'{overview_icon_dict["[father]"]} Partner &emsp;&emsp;'
+                    f'{overview_icon_dict["[child]"]} Child &emsp;&emsp;'
+                    f'{overview_icon_dict["[subsample-mother]"]} Mother (sub-sample) &emsp;&emsp;'
+                    f'{overview_icon_dict["[subsample-father]"]} Partner (sub-sample) &emsp;&emsp;'
+                    f'{overview_icon_dict["[subsample-child]"]} Child (sub-sample)<br>'
+                    f'&emsp;<span style="color:grey">Click on any cell to display '
+                    f'more information about the measure selected.</span>')
+        
     # Update the overview UI input --------------------------------------------------
     @reactive.effect
     def _():
@@ -16,21 +50,29 @@ def overview_reactivity(input, output, session):
 
         if all_time:
             ui.update_selectize(id='overview_selected_time',
-                                selected=list(overview_time_choices.keys()))
+                                selected=time_choices)
 
     @reactive.effect
     def _():
         selected_times = input.overview_selected_time()
 
-        if len(selected_times) < len(overview_time_choices):
+        if len(selected_times) < len(time_choices):
             ui.update_switch(id='overview_switch_time', value=False)
 
     # Update the overview table ----------------------------------------------------
     @reactive.Calc
     def _filter_overview_table():
+        if label == 'Questionnaires':
+            selected_reporters = input.overview_selected_reporters()
+            table = q_table 
+        else: 
+            selected_reporters = None
+            table = m_table
+
         return filter_overview_table(selected_timepoints=input.overview_selected_time(),
                                      selected_subjects=input.overview_selected_subjects(),
-                                     selected_reporters=input.overview_selected_reporters())
+                                     selected_reporters=selected_reporters,
+                                     table=table)
 
     @reactive.Effect
     @reactive.event(input.overview_search_button)
@@ -61,15 +103,7 @@ def overview_reactivity(input, output, session):
 
     @render.ui
     def overview_legend():
-        return ui.markdown(f'&emsp;'
-                           f'{overview_icon_dict["mother-self"]} Mother self-report &emsp;&emsp;'
-                           f'{overview_icon_dict["partner-self"]} Partner self-report &emsp;&emsp;'
-                           f'{overview_icon_dict["child-self"]} Child self-report &emsp;&emsp;'
-                           f'{overview_icon_dict["mother-child"]} Mother about the child &emsp;&emsp;'
-                           f'{overview_icon_dict["partner-child"]} Partner about the child &emsp;&emsp;'
-                           f'{overview_icon_dict["teacher-child"]} Teacher about child<br>'
-                           f'&emsp;<span style="color:grey">Click on any row below to display '
-                           f'more information about the measure selected.</span>')
+        return legend
 
     @reactive.effect
     def _():

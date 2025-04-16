@@ -95,3 +95,9 @@ h6 {
     background-color: var(--genr-lightblue);
     border: 1px solid var(--genr-lightblue);
 }
+
+
+/* Table styles */
+shiny-data-frame .shiny-data-grid > table > thead {
+    z-index: 10; /* Ensure headers are above other elements */
+}

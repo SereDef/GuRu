@@ -7,45 +7,41 @@ from definitions.terms_and_styles import guru_colors, overview_icon_dict
 # Read, cleanup & style OVERVIEW TABLE
 # ======================================================================================================================
 
-overview_table, q_description = pd.read_excel('assets/content_questionnaires.xlsx', sheet_name=None).values()
+q_table, q_description = pd.read_excel('assets/content_questionnaires.xlsx', 
+                                       sheet_name=None).values()
 
-# DataTable does not support multiIndex dataframes for now
-# index = pd.MultiIndex.from_frame(overview_table[['concept','measure']])
-# overview_table_grouped = pd.DataFrame(overview_table[timepoints].values, index=index, columns=timepoints)
+m_table, m_description = pd.read_excel('assets/content_measurements.xlsx', 
+                                       sheet_name=None).values()
 
-# Replace all reporter-subject information with the corresponding icons
-timepoint_cols = [c for c in overview_table.columns if c not in ['id', 'concept', 'measure']]
+def iconize_table(table, paste_back_space=''):
+    """
+    Replace text with icons.
+    :param table: DataFrame to be cleaned
+    :return: cleaned DataFrame
+    """
+    timepoint_cols = [c for c in table.columns if c not in ['Concept', 'Measure']]
 
-for col in timepoint_cols:
-    # Create a copy original text column for search
-    overview_table[f'{col}_txt'] = overview_table[col]
-    # Initiate icon_recoded column (this has better performance than assigning directly)
-    icon_recoded = list()
-    for value in overview_table[col]:
-        if pd.notna(value) and value != '':
-            icons = [overview_icon_dict[v] for v in value.split(' ')]
-            icon_recoded.append(ui.span(*icons))
-        else:
-            icon_recoded.append('')
-    # Assign recoded value
-    overview_table[col] = icon_recoded
+    icon_table = table.copy()
+    for col in timepoint_cols:
+        # Create a copy original text column for search
+        icon_table[f'{col}_txt'] = icon_table[col]
+        # Initiate icon_recoded column (this has better performance than assigning directly)
+        icon_recoded = list()
+        for value in icon_table[col]:
+            if pd.notna(value) and value != '':
+                icons = [overview_icon_dict[v] if v in overview_icon_dict.keys() else 
+                         f'{paste_back_space}{v}{paste_back_space}' for v in value.split(' ')]
+                icon_recoded.append(ui.span(*icons))
+            else:
+                icon_recoded.append('')
+        # Assign recoded value
+        icon_table[col] = icon_recoded
+ 
+    return icon_table
 
-# This one adds an icon before the text, you gotta define them though in tags.styles...
-# def replace_text_with_icons(table, var, var_pos, icon_dict):
-#
-#     # icon_mapping = {key: f'<i class="fas {value[0]}" style="color: {value[1]};"></i>'
-#     #                 for key, value in icon_dict.items()}
-#
-#     icon_styler = list()
-#     for k in icon_dict.keys():
-#         icon_styler.append({
-#             'rows': table.index[table[var] == k].tolist(),
-#             'cols': [var_pos],
-#             'class': icon_dict[k]
-#         })
-#
-#     return icon_styler
 
+q_table = iconize_table(q_table)
+m_table = iconize_table(m_table, paste_back_space=' ')
 
 # Server side ---------------------------------------------
 def overview_table_height(nrows):
@@ -82,26 +78,9 @@ def overview_table_style(nrows, ncols):
 def filter_overview_table(selected_timepoints,
                           selected_subjects,
                           selected_reporters,
-                          table=overview_table):
-
-    overview_columns = {
-        'concept': 'Category',  # 0
-        'measure': 'Measure',   # 1
-        'Pre': 'Pregnancy',     # 2
-        '2m': '2 months',       # 3
-        '6m': '6 months',       # 4
-        '1y': '1 year',         # 5
-        '1.5y': '1.5 years',    # 6
-        '2y': '2 years',        # 7
-        '2.5y': '2.5 years',    # 8
-        '3y': '3 years',        # 9
-        '4y': '4 years',        # 10
-        '6y': '6 years',        # 11
-        '8y': '8 years',        # 12
-        '10y': '10 years',      # 13
-        '14y': '14 years',      # 14
-        '18y': '18 years',      # 15
-        }
+                          table):
+    
+    if selected_reporters is None: selected_reporters = [None]
 
     # User selected time point ----------------------------
     if (selected_timepoints is None) or \
@@ -109,18 +88,18 @@ def filter_overview_table(selected_timepoints,
             (len(selected_subjects) == 0) or \
             (len(selected_reporters) == 0):
         # Return an empty table
-        empty_table = pd.DataFrame(columns=overview_columns)
+        # Filter columns that do NOT contain the specified substrings
+        clean_col_names = [col for col in table.columns if 'txt' not in col]
+        # Subset the DataFrame to keep only the filtered columns
+        empty_table = pd.DataFrame(columns=clean_col_names)
 
         return empty_table
 
-    times = [k for k in overview_columns.keys() if k not in ['concept', 'measure']]  # all available times
+    times = [c for c in table.columns if all(sub not in c for sub in ['Concept', 'Measure', 'txt'])]
 
-    if len(selected_timepoints) < len(times):
-        times = list(selected_timepoints)
-        column_subset = dict((k, overview_columns[k]) for k in overview_columns.keys()
-                             if k in ['concept', 'measure']+times)
-    else:
-        column_subset = overview_columns
+    if len(selected_timepoints) < len(times): times = list(selected_timepoints)
+    
+    column_subset = ['Concept', 'Measure'] + times
 
     # User selected subject and reporter ---------------------------------
     if (len(selected_subjects) < 3) or (len(selected_reporters) < 4):
@@ -139,10 +118,10 @@ def filter_overview_table(selected_timepoints,
             lambda row: row.astype(str).str.contains('|'.join(search_codes)).any(), axis=1)]
 
     # Rename and subset columns
-    table_clean = table.rename(columns=column_subset)[[*column_subset.values()]]
+    table_clean = table[column_subset]
 
     # Remove any leftover empty rows
-    table_clean = table_clean[table_clean[list(column_subset.values())[2:]].apply(
+    table_clean = table_clean[table_clean[list(column_subset)[2:]].apply(
         lambda row: any(row.values != ''), axis=1)]
 
     return table_clean  # , table_style, table_height

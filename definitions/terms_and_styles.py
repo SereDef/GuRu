@@ -24,12 +24,20 @@ user_input_panel_style = f'padding-top: 20px; padding-right: 30px; padding-left:
                          f'border-radius: 30px; ' \
                          f'background-color: {guru_colors["background-lightblue"]}'
 
+# zorder = 'position: relative; z-index: 1;' # not needed in the end :) 
 overview_icon_dict = {'mother-self': ui.span(icon_svg('square'), style=f'color: {guru_colors["mother-darkshade"]};'),
                       'mother-child': ui.span(icon_svg('square'), style=f'color: {guru_colors["child-darkshade"]};'),
                       'partner-self': ui.span(icon_svg('diamond'), style=f'color: {guru_colors["father-darkshade"]};'),
                       'partner-child': ui.span(icon_svg('diamond'), style=f'color: {guru_colors["child-darkshade"]};'),
                       'child-self': ui.span(icon_svg('circle'), style=f'color: {guru_colors["child-darkshade"]};'),
-                      'teacher-child': ui.span(icon_svg('star-of-life'), style=f'color: {guru_colors["child-darkshade"]};')
+                      'teacher-child': ui.span(icon_svg('star-of-life'), style=f'color: {guru_colors["child-darkshade"]};'),
+                      # measurement table
+                      '[mother]': ui.span(icon_svg('square'), style=f'color: {guru_colors["mother-darkshade"]};'),
+                      '[father]': ui.span(icon_svg('diamond'), style=f'color: {guru_colors["father-darkshade"]};'),
+                      '[child]': ui.span(icon_svg('circle'), style=f'color: {guru_colors["child-darkshade"]};'),
+                      '[subsample-mother]': ui.span(icon_svg('square'), style=f'color: {guru_colors["mother-darkshade"]}; stroke: black; stroke-width: 100px;'),
+                      '[subsample-father]': ui.span(icon_svg('diamond'), style=f'color: {guru_colors["father-darkshade"]}; stroke: black; stroke-width: 100px;'),
+                      '[subsample-child]': ui.span(icon_svg('circle'), style=f'color: {guru_colors["child-darkshade"]}; stroke: black; stroke-width: 100px;'),
                       }
 
 subject_choices = {'child': 'Child',
@@ -41,19 +49,6 @@ reporter_choices = {'child': 'Child',
                     'mother': 'Mother / main caregiver',
                     'father': 'Father / partner',
                     'teacher': 'Teacher'}
-
-overview_time_choices = {'Pre': 'Pregnancy',
-                         '2m': '2 months',
-                         '6m': '6 months',
-                         '1y': '1 year',
-                         '2y': '2 years',
-                         '3y': '3 years',
-                         '4y': '4 years',
-                         '6y': '6 years',
-                         '8y': '8 years',
-                         '10y': '10 years',
-                         '14y': '14 years',
-                         '18y': '18 years'}
 
 variable_time_choices = {'Pregnancy': {'20w': '1st trimester',
                                        '25w': '2nd trimester',

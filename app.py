@@ -41,8 +41,8 @@ app_ui = ui.page_fluid(
 
 def server(input, output, session):
 
-    overview_reactivity('questionnaire')
-    overview_reactivity('measurements')
+    overview_reactivity('questionnaire', label = 'Questionnaires')
+    overview_reactivity('measurements', label = 'Measurements')
 
     variable_reactivity(input, output)
     datawiki_reactivity(input, output)

@@ -8,10 +8,10 @@ from definitions.terms_and_styles import guru_colors
 def timepoint_selector(page_id, time_choices):
 
     # Is dictionary nested (first value is a dictionary)
-    if isinstance(next(iter(time_choices.values())), dict):
-        all_times = [time for period in time_choices.keys() for time in time_choices[period]]
+    if isinstance(next(iter(time_choices)), dict):
+        all_times = [time for period in time_choices for time in time_choices[period]]
     else:
-        all_times = list(time_choices.keys())
+        all_times = time_choices
 
     # Cannot input custom labels into a slider, so I use a selection menu (for now)
     return ui.div(ui.h6('Time point(s)'),
