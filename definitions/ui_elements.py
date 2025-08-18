@@ -23,15 +23,17 @@ def timepoint_selector(page_id, time_choices):
                                      multiple=True,
                                      width='95%'))
 
-def discrete_timepoint_slider(id: str, labels: list):
+def discrete_timepoint_slider(id: str, labels: list, header: str = None):
     """Creates a discrete slider that works with Shiny's module system
     Args:
         id: The input ID (will be namespaced by the module)
         labels: List of labels for the slider points
     """
+    header_html = f'<h6>{header}</h6>' if header else ""
     # Let the module system resolve the ID
     resolved_id = module.resolve_id(id)
     return ui.HTML(f"""
+        {header_html}
         <div id="{resolved_id}" class="discrete-slider" 
              data-labels='{json.dumps(labels)}'></div>
     """)
@@ -46,18 +48,29 @@ def checkbox_selector(page_id, item_id, item_label, options_dict):
 
 
 def multicol_checkbox_selector(page_id, item_id, multicol_options_dict):
+    """Creates a dynamic number of checkbox group columns based on the options dictionary keys."""
 
-    return ui.layout_columns(
-        ui.input_checkbox_group(id=f'{page_id}_{item_id}1',
-                                label='Matching:',
-                                choices=multicol_options_dict['col1'],
-                                selected=list(multicol_options_dict['col1'].keys())),
-        ui.input_checkbox_group(id=f'{page_id}_{item_id}2',
-                                label=ui.div('Matching:', style=f'color: {guru_colors["background-lightblue"]}; '),
-                                choices=multicol_options_dict['col2'],
-                                selected=list(multicol_options_dict['col2'].keys()))
-    )
+    columns = []
+    # Loop over each key (column) in the dictionary
+    for idx, (col_key, choices_dict) in enumerate(multicol_options_dict.items(), start=1):
+        # Prepare label; use plain text for first column, colored div for others as example
+        if idx == 1:
+            label = "Matching:"
+        else:
+            label = ui.div("blank", style=f'color: {guru_colors["background-lightblue"]};')
+        
+        # Create input_checkbox_group for this column
+        checkbox_group = ui.input_checkbox_group(
+            id=f"{page_id}_{item_id}{idx}",
+            label=label,
+            choices=choices_dict,
+            selected=list(choices_dict.keys())
+        )
 
+        columns.append(checkbox_group)
+
+    # Return a layout_columns with all the generated checkbox groups
+    return ui.layout_columns(*columns)
 
 def search_panel(page_id):
 
@@ -71,9 +84,9 @@ def search_panel(page_id):
                                        value='',
                                        width='100%')
 
-        search_domains = {'col1': {'Category': 'Categories',
-                                   'Measure': 'Measures'},
-                          'col2': {'description': 'Descriptions'}}
+        search_domains = {'col1': {'Concept': 'Categories'},
+                          'col2': {'Measure': 'Measures'},
+                          'col3': {'description': 'Descriptions'}}
 
         regex_switch = None
 
@@ -95,7 +108,7 @@ def search_panel(page_id):
                           width='100%'),
             col_widths=[3, 9],
             gap='0px')
-
+        
         search_domains = {'col1': {'Variable name': 'Variable names',
                                    'Variable label': 'Variable labels'},
                           'col2': {'Reference': 'Reference',
@@ -105,21 +118,23 @@ def search_panel(page_id):
                               style='margin-top: -10px')
 
     search_group = ui.div(
-        search_textbox,
+         ui.layout_columns(
+             search_textbox,
+             ui.div(ui.input_action_button(id=f'{page_id}_search_button',
+                                      label='Search',
+                                      class_='guru-button'),
+               style='float: right; margin-top: 32px; margin-bottom: -5px'),
+             col_widths=[8, 4]),
         ui.layout_columns(
             ui.div(
                 ui.input_switch(id=f'{page_id}_search_case_sensitive',
                                 label='Case sensitive',
                                 value=False),
                 regex_switch),
-            multicol_checkbox_selector(page_id=page_id, item_id='search_domains',
-                                       multicol_options_dict=search_domains),
+                multicol_checkbox_selector(page_id=page_id, item_id='search_domains',
+                                           multicol_options_dict=search_domains),
             gap='10px',
             col_widths=[4, 8]),
-        ui.div(ui.input_action_button(id=f'{page_id}_search_button',
-                                      label='Search',
-                                      class_='guru-button'),
-               style='float: right; margin-top: -15px; margin-bottom: 20px'),
         style='margin-left: 20px')
 
     return search_group

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (!slider.noUiSlider) {
             noUiSlider.create(slider, {
-                start: [0, labels.length - 1],
+                start: [labels[0], labels[labels.length - 1]],
                 connect: true,
                 step: 1,
                 range: {

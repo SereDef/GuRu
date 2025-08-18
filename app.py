@@ -19,12 +19,15 @@ css_file = here / 'css' / 'custom_styles.css'
 logo_img = here / 'www'
 
 app_ui = ui.page_fluid(
+
     ui.include_css(css_file),
+    
+    # Inlcude custom JS component for discrete slider
     ui.tags.script(src="custom_js_components/nouislider.min.js"),
     ui.tags.script(src="custom_js_components/custom_slider.js"),
     ui.tags.script(src="custom_js_components/custom_slider_binding.js"),
     ui.tags.link(rel="stylesheet", href="custom_js_components/nouislider.min.css"),
-    ui.tags.link(rel="stylesheet", href="custom_js_components/custom_slider.css"),
+
     ui.page_navbar(
         # ui.nav_spacer(),
         overview_page(tab_name='overview_page'),

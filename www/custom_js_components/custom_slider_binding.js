@@ -2,8 +2,11 @@
     // Use py_shiny for Shiny for Python
     const binding = new Shiny.InputBinding();
 
+    // binding.find = function(scope) {
+    //     return scope.querySelectorAll('.discrete-slider');
+    // };
     binding.find = function(scope) {
-        return scope.querySelectorAll('.discrete-slider');
+        return $(scope).find('.discrete-slider').toArray();
     };
 
     binding.getValue = function(el) {

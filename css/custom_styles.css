@@ -89,6 +89,11 @@ h6 {
     position: fixed;
     left: 50%;
     transform: translateX(-60%);
+    max-height: 750px !important;
+    overflow-y: auto !important;
+    white-space: pre-wrap !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
 }
 
 .form-select {
@@ -100,4 +105,32 @@ h6 {
 /* Table styles */
 shiny-data-frame .shiny-data-grid > table > thead {
     z-index: 10; /* Ensure headers are above other elements */
+}
+
+
+/* Tilt and align noUiSlider pip labels */
+.discrete-slider .noUi-value {
+    color: var(--genr-lightblue) !important; 
+    font-size: 16px;
+    transform: rotate(25deg) !important; 
+    transform-origin: top left;
+    text-align: left;
+    display: inline-block;
+    white-space: nowrap;
+    margin-top: 10px;
+    margin-left: -2px;
+}
+
+.discrete-slider .noUi-connect {
+    background: var(--genr-blue) !important;
+}
+
+.discrete-slider .noUi-handle {
+    border: 1px solid #D9D9D9;
+    border-radius: 12px !important;
+    background: #FFF;
+}
+
+.noUi-target {
+    border-radius: 10px !important;
 }

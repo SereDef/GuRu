@@ -84,8 +84,15 @@ def overview_reactivity(input, output, session, label = 'Questionnaires'):
     async def _search_overview_table():
         search_terms = input.overview_search_terms().split(';')
 
-        variable_search_domains = list(input.overview_search_domains1()) + list(input.overview_search_domains2())
-
+        # Dynamically gather all inputs starting with 'overview_search_domains'
+        variable_search_domains = []
+        for variable_search_col in [1, 2, 3]:
+            variable_search_id = f'overview_search_domains{variable_search_col}'
+            variable_search_input = input[variable_search_id]()
+            if variable_search_input:
+                variable_search_domains.extend(list(variable_search_input))
+                
+        
         search_results_table = search_overview_table(table=_filter_overview_table(),
                                                      search_terms=search_terms,
                                                      search_domains=variable_search_domains,
@@ -108,7 +115,7 @@ def overview_reactivity(input, output, session, label = 'Questionnaires'):
 
     @render.ui
     def overview_legend():
-        return legend
+        return ui.div(legend, style='margin-top: 20px;')
 
     # @reactive.effect
     # def _():
@@ -119,11 +126,10 @@ def overview_reactivity(input, output, session, label = 'Questionnaires'):
     #                 ui.markdown(display_measure_description(selected_measures)),
     #                                  duration=10)
     @reactive.effect
-    def _():
-        df = input.overview_df_data()
+    def row_info():
+        df = overview_df.data()
         if df.shape[0] > 0:
-            selected = input.overview_df_data_view(selected=True)
-            selected_measures = list(selected["Measure"])
+            selected_measures = list(overview_df.data_view(selected=True)["Measure"])
             if selected_measures:
                 ui.notification_show(
                     ui.markdown(display_measure_description(selected_measures)),

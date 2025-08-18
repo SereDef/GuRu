@@ -16,7 +16,7 @@ def overview_tab(label: str):
     if label == 'Questionnaires':
         time_choices = ['Prenatal', '2 months', '6 months', '1 year', '1.5 years', 
                         '2 years', '2.5 years', '3 years', '4 years', '6 years', 
-                        '8 years', '10 years', '14 years', '18 years']
+                        '8 years', '10 years', '14 years', '18 years', '22 years']
         # Only show the reporter checkbox on the Quesitonnaires tab
         reporter_checkbox = checkbox_selector(page_id=page_id,
                                               item_id='selected_reporters',
@@ -26,14 +26,15 @@ def overview_tab(label: str):
     else:
         time_choices = ['Prenatal', 'Birth', '6 weeks', '3 months', '6 months', 
                         '1 year', '3 years', '4 years', '6 years', '10 years', 
-                        '14 years', '18 years']
+                        '14 years', '18 years', '22 years']
         reporter_checkbox = ui.div(style="flex: 1;")  # Spacer
 
     # timepoint_slider = timepoint_selector(page_id=page_id, 
     #                                       time_choices=time_choices)
 
     discrete_slider = discrete_timepoint_slider(id=f'{page_id}_selected_time', 
-                                                labels=time_choices)
+                                                labels=time_choices, 
+                                                header='Select time point(s)')
     
     subject_checkbox = checkbox_selector(page_id=page_id,
                                         item_id='selected_subjects',
@@ -44,15 +45,16 @@ def overview_tab(label: str):
         # Tab title
         label,
         # Selection pane
-        ui.layout_columns(
-            # timepoint_slider,
-            ui.div(
-                ui.row(discrete_slider, style='margin-bottom: 70px;'),
-                ui.row(ui.layout_columns(subject_checkbox, reporter_checkbox)),
-            ),
-            search_panel(page_id=page_id),
-            col_widths=(6, -1, 5),
-            gap='25px',
+        ui.div(
+            ui.row(discrete_slider, 
+                   style='margin-bottom: 100px; margin-top: 20px; margin-left: 30px; margin-right: 35px;'),
+            ui.row(ui.layout_columns(
+                search_panel(page_id=page_id), 
+                subject_checkbox,
+                reporter_checkbox, 
+                col_widths=(7, 3, 2), 
+                gap = '0px',
+                style='margin-bottom: 0px;')),
             style=user_input_panel_style),
         # Output
         ui.output_ui(id=f'{page_id}_legend'),
