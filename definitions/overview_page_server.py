@@ -44,21 +44,26 @@ def overview_reactivity(input, output, session, label = 'Questionnaires'):
                     f'more information about the measure selected.</span>')
         
     # Update the overview UI input --------------------------------------------------
-    @reactive.effect
-    def _():
-        all_time = input.overview_switch_time()
+    # @reactive.effect
+    # def _():
+    #     all_time = input.overview_switch_time()
 
-        if all_time:
-            ui.update_selectize(id='overview_selected_time',
-                                selected=time_choices)
+    #     if all_time:
+    #         ui.update_selectize(id='overview_selected_time',
+    #                             selected=time_choices)
 
-    @reactive.effect
-    def _():
-        selected_times = input.overview_selected_time()
+    # @reactive.effect
+    # def _():
+    #     selected_times = input.overview_selected_time()
 
-        if len(selected_times) < len(time_choices):
-            ui.update_switch(id='overview_switch_time', value=False)
-
+    #     if len(selected_times) < len(time_choices):
+    #         ui.update_switch(id='overview_switch_time', value=False)
+    # @reactive.Effect
+    # def _():
+    #     # Get the selected timepoints as a list
+    #     selected_times = input.overview_selected_time()
+    #     print("Selected timepoints:", selected_times)
+    
     # Update the overview table ----------------------------------------------------
     @reactive.Calc
     def _filter_overview_table():
@@ -105,11 +110,22 @@ def overview_reactivity(input, output, session, label = 'Questionnaires'):
     def overview_legend():
         return legend
 
+    # @reactive.effect
+    # def _():
+    #     if overview_df.data().nrow() > 0:
+    #         selected_measures = list(overview_df.data_view(selected=True)["Measure"])
+    #         if len(selected_measures) > 0:
+    #             ui.notification_show(
+    #                 ui.markdown(display_measure_description(selected_measures)),
+    #                                  duration=10)
     @reactive.effect
     def _():
-        if overview_df.data().shape[0] > 0:
-            selected_measures = list(overview_df.data_view(selected=True)["Measure"])
-            if len(selected_measures) > 0:
+        df = input.overview_df_data()
+        if df.shape[0] > 0:
+            selected = input.overview_df_data_view(selected=True)
+            selected_measures = list(selected["Measure"])
+            if selected_measures:
                 ui.notification_show(
                     ui.markdown(display_measure_description(selected_measures)),
-                                     duration=10)
+                    duration=10
+                )

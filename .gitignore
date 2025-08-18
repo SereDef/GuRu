@@ -3,3 +3,5 @@ definitions/__pycache__/
 
 .DS_Store
 definitions/.DS_Store
+
+.vscode/

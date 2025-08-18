@@ -1,4 +1,5 @@
-from shiny import ui
+from shiny import ui, module
+import json
 from faicons import icon_svg
 
 from definitions.variable_page_backend import metadata_table
@@ -21,6 +22,19 @@ def timepoint_selector(page_id, time_choices):
                                      selected=all_times,
                                      multiple=True,
                                      width='95%'))
+
+def discrete_timepoint_slider(id: str, labels: list):
+    """Creates a discrete slider that works with Shiny's module system
+    Args:
+        id: The input ID (will be namespaced by the module)
+        labels: List of labels for the slider points
+    """
+    # Let the module system resolve the ID
+    resolved_id = module.resolve_id(id)
+    return ui.HTML(f"""
+        <div id="{resolved_id}" class="discrete-slider" 
+             data-labels='{json.dumps(labels)}'></div>
+    """)
 
 
 def checkbox_selector(page_id, item_id, item_label, options_dict):
