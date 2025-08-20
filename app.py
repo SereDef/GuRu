@@ -37,8 +37,9 @@ app_ui = ui.page_fluid(
 
         id='main_navbar',
         selected='overview_page',
-        position='fixed-top',  # Navbar is pinned at the top
-        bg='white',
+        navbar_options=ui.navbar_options(
+            position='fixed-top',  # Navbar is pinned at the top
+            bg='white'),
         fillable=True,
         padding=[130, 20, 20],  # top, left-right, bottom in px
         window_title='GuRu',
