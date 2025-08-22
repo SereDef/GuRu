@@ -9,7 +9,7 @@ def _():
     import marimo as mo
 
     import pandas as pd
-    return (pd,)
+    return mo, pd
 
 
 @app.cell
@@ -18,7 +18,7 @@ def _(pd):
     # report_url ="https://erasmusmc.sharepoint.com/:x:/r/sites/GenRWiki/Gedeelde%20documenten/WIKI/Data/Report_DatawikiFiles_Wiki.xlsx?d=w67cbe43cc4584921ab3a2d11f9efeb62&csf=1&web=1&e=WixABk"
 
     # Downloaded on 21/08/2025
-    report_file = "Report_DatawikiFiles_Wiki.xlsx"
+    report_file = "Report_DatawikiFiles.xlsx"
 
     xls = pd.read_excel(report_file, sheet_name=None, engine="openpyxl")
 
@@ -54,7 +54,7 @@ def _(df, pd):
     if len(problematic_files) > 0:
         print("Problematic files:")
         [print(f) for f in problematic_files]
-    
+
     # Keep only rows with exactly 4 parts
     valid_filenames = new_filenames.loc[~mask].copy()
     valid_filenames[expected_info] = pd.DataFrame(split_file_names[~mask].tolist(), index=valid_filenames.index)
@@ -81,18 +81,18 @@ def _(Abbrevations, valid_filenames):
             abbr_match = {
                 s: [(acronym, desc)
                     for acronym, desc in zip(Abbrevations.Abbrevation, Abbrevations.Definition) if acronym in s] for s in problem}
-        
+
             for f, abbr in abbr_match.items():
                 if len(abbr) == 0:
                     abbr = "NO MATCHING ABBRIVIATIONS"
                 else: 
                     abbr = f"Abbr: {abbr[0][0]} = {abbr[0][1]}"
 
-            
+
                 print(f"{f.ljust(60)}{abbr}")
         else:
             [print(f) for f in problem]
-    
+
     return (print_problem,)
 
 
@@ -105,6 +105,7 @@ def _(valid_filenames):
 @app.cell
 def _(print_problem):
     print_problem("subject", "MotherSubgroup")
+    print_problem("subject", "ChildFocus")
     return
 
 
@@ -120,7 +121,7 @@ def _(print_problem):
 
     print_problem("timepoint", ["Pregancy","App17"])
 
-    print_problem("timepoint", ["13Y","6Y","2011-2012Y","2008-2012Y"])
+    print_problem("timepoint", ["13Y","6Y","14M", "2011-2012Y","2008-2012Y"])
 
     print_problem("timepoint", ["0-10Y","Mult-9-13Y","Multi-0-9Y"])
     return
@@ -134,14 +135,33 @@ def _(valid_filenames):
 
 @app.cell
 def _(valid_filenames):
-    valid_filenames.data.value_counts()
+    data_counts = valid_filenames.data.value_counts()
+    data_counts
+    return (data_counts,)
+
+
+@app.cell
+def _(data_counts, mo):
+    data_slider = mo.ui.number(start= 0, stop=data_counts.shape[0], step=1)
+    data_slider
+    return (data_slider,)
+
+
+@app.cell
+def _(data_counts, data_slider, print_problem):
+    this_data = data_counts.index[data_slider.value]
+    print(this_data)
+    print_problem("data", this_data)
+
+
     return
 
 
 @app.cell
-def _():
+def _(print_problem):
+    # some additional checks
     # print_problem("data", "DXA")
-    # print_problem("data", "Weight")
+    print_problem("data", "DXA")
     return
 
 
