@@ -1,7 +1,7 @@
 from shiny import ui, module
 from faicons import icon_svg
 
-from definitions.ui_elements import timepoint_selector, discrete_timepoint_slider, checkbox_selector, file_selector, search_panel
+from definitions.ui_elements import discrete_timepoint_slider, checkbox_selector, file_selector, search_panel
 from definitions.terms_and_styles import user_input_panel_style, banner_panel, \
     subject_choices, reporter_choices, variable_time_choices, time_points_available
 

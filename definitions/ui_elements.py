@@ -5,23 +5,22 @@ import json
 from definitions.variable_page_backend import metadata_table
 from definitions.terms_and_styles import guru_colors
 
+# def timepoint_selector(page_id, time_choices):
 
-def timepoint_selector(page_id, time_choices):
+#     # Is dictionary nested (first value is a dictionary)
+#     if isinstance(next(iter(time_choices)), dict):
+#         all_times = [time for period in time_choices for time in time_choices[period]]
+#     else:
+#         all_times = time_choices
 
-    # Is dictionary nested (first value is a dictionary)
-    if isinstance(next(iter(time_choices)), dict):
-        all_times = [time for period in time_choices for time in time_choices[period]]
-    else:
-        all_times = time_choices
-
-    # Cannot input custom labels into a slider, so I use a selection menu (for now)
-    return ui.div(ui.h6('Time point(s)'),
-                  ui.input_switch(id=f'{page_id}_switch_time', label='All available', value=True),
-                  ui.input_selectize(id=f'{page_id}_selected_time', label='',
-                                     choices=time_choices,
-                                     selected=all_times,
-                                     multiple=True,
-                                     width='95%'))
+#     # Cannot input custom labels into a slider, so I use a selection menu (for now)
+#     return ui.div(ui.h6('Time point(s)'),
+#                   ui.input_switch(id=f'{page_id}_switch_time', label='All available', value=True),
+#                   ui.input_selectize(id=f'{page_id}_selected_time', label='',
+#                                      choices=time_choices,
+#                                      selected=all_times,
+#                                      multiple=True,
+#                                      width='95%'))
 
 def discrete_timepoint_slider(id: str, labels: list, header: str = None):
     """Creates a discrete slider that works with Shiny's module system
@@ -29,7 +28,7 @@ def discrete_timepoint_slider(id: str, labels: list, header: str = None):
         id: The input ID (will be namespaced by the module)
         labels: List of labels for the slider points
     """
-    header_html = f'<h6>{header}</h6>' if header else ""
+    header_html = f'<h6 style="margin-left: -30px; margin-top: -10px; margin-bottom: 20px;">{header}</h6>' if header else ""
     # Let the module system resolve the ID
     resolved_id = module.resolve_id(id)
     return ui.HTML(f"""
