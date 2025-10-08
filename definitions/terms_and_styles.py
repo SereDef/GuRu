@@ -40,6 +40,28 @@ overview_icon_dict = {'mother-self': ui.span(icon_svg('square'), style=f'color: 
                       '[subsample-child]': ui.span(icon_svg('circle'), style=f'color: {guru_colors["child-darkshade"]}; stroke: black; stroke-width: 100px;'),
                       }
 
+overview_icon_legend = {
+  'Questionnaires': ui.markdown(f'&emsp;'
+                    f'{overview_icon_dict["mother-self"]} Mother self-report &emsp;&emsp;'
+                    f'{overview_icon_dict["partner-self"]} Partner self-report &emsp;&emsp;'
+                    f'{overview_icon_dict["child-self"]} Child self-report &emsp;&emsp;'
+                    f'{overview_icon_dict["mother-child"]} Mother about the child &emsp;&emsp;'
+                    f'{overview_icon_dict["partner-child"]} Partner about the child &emsp;&emsp;'
+                    f'{overview_icon_dict["teacher-child"]} Teacher about child<br>'
+                    f'&emsp;<span style="color:grey">Click on any row below to display '
+                    f'more information about the measure selected.</span>'),
+  'Measurements': ui.markdown(f'&emsp;'
+                    f'{overview_icon_dict["[mother]"]} Mother &emsp;&emsp;'
+                    f'{overview_icon_dict["[father]"]} Partner &emsp;&emsp;'
+                    f'{overview_icon_dict["[child]"]} Child &emsp;&emsp;'
+                    f'{overview_icon_dict["[subsample-mother]"]} Mother (sub-sample) &emsp;&emsp;'
+                    f'{overview_icon_dict["[subsample-father]"]} Partner (sub-sample) &emsp;&emsp;'
+                    f'{overview_icon_dict["[subsample-child]"]} Child (sub-sample)<br>'
+                    f'&emsp;<span style="color:grey">Click on any cell to display '
+                    f'more information about the measure selected.</span>'),
+  'Other': ''
+}                    
+
 subject_choices = {'child': 'Child',
                    'mother': 'Mother / main caregiver',
                    'father': 'Father / partner'}
@@ -64,6 +86,29 @@ variable_time_choices = {'Pregnancy': {'20w': '1st trimester',
                          'Adolescence': {'14y': '14 years',
                                          '18y': '18 years'}}
 
+time_points_available = {
+
+  'overview': {
+    'Questionnaires' : ['Prenatal', '2 months', '6 months', '1 year', '1.5 years', 
+                        '2 years', '2.5 years', '3 years', '4 years', '6 years', 
+                        '8 years', '10 years', '14 years', '18 years', '22 years'],
+    'Hands-on measurements': ['Prenatal', 'Birth', '6 weeks', '3 months', '6 months', 
+                        '1 year', '3 years', '4 years', '6 years', '10 years', 
+                        '14 years', '18 years', '22 years'],
+    'Other': []
+  },
+
+  'variable': {
+    'Questionnaires' : ['1st trimester','2nd trimester', '3rd trimester', 'Birth',
+                        '2 months', '6 months', '1 year', '2 years', '3 years', '6 years', 
+                        '10 years', '14 years', '18 years'],
+    'Hands-on measurements': ['1st trimester','2nd trimester', '3rd trimester', 'Birth',
+                        '2 months', '6 months', '1 year', '2 years', '3 years', '6 years', 
+                        '10 years', '14 years', '18 years'],
+    'Other': []
+  }
+
+}
 
 
 # Generate theme ----------------------------

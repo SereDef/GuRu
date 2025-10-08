@@ -1,6 +1,6 @@
 from shiny import ui, module
-import json
 from faicons import icon_svg
+import json
 
 from definitions.variable_page_backend import metadata_table
 from definitions.terms_and_styles import guru_colors

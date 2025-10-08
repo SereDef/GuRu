@@ -1,15 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('.discrete-slider').forEach(function(slider) {
         const labels = JSON.parse(slider.getAttribute('data-labels'));
+        const minVal = 0;
+        const maxVal = labels.length - 1;
 
         if (!slider.noUiSlider) {
             noUiSlider.create(slider, {
-                start: [labels[0], labels[labels.length - 1]],
+                start: [labels[minVal], labels[maxVal]],
                 connect: true,
                 step: 1,
                 range: {
-                    min: 0,
-                    max: labels.length - 1
+                    min: minVal,
+                    max: maxVal
                 },
                 tooltips: [true, true],
                 format: {

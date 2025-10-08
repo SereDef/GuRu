@@ -97,8 +97,12 @@ def filter_overview_table(selected_timepoints,
 
     times = [c for c in table.columns if all(sub not in c for sub in ['Concept', 'Measure', 'txt'])]
 
-    if len(selected_timepoints) < len(times): times = list(selected_timepoints)
+    if len(selected_timepoints) < len(times): 
+        times = list(selected_timepoints)
     
+    # Clean up any timepoints that are not in dataframe (TMP)
+    # times = table.columns.intersection(times)
+
     column_subset = ['Concept', 'Measure'] + times
 
     # User selected subject and reporter ---------------------------------
