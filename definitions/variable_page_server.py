@@ -1,7 +1,5 @@
 from shiny import ui, module, render, reactive
 
-from definitions.terms_and_styles import variable_time_choices
-
 from definitions.variable_page_backend import variable_table_style, variable_table_height, \
     filter_variable_table, search_variable_table, \
     display_variable_info

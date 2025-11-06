@@ -1,17 +1,17 @@
 from shiny import App, ui
 from pathlib import Path
 
+from definitions.welcome_page_ui import welcome_page
 from definitions.overview_page_ui import overview_page
 from definitions.variable_page_ui import variable_page
 
+from definitions.welcome_page_server import welcome_reactivity
 from definitions.overview_page_server import overview_reactivity
 from definitions.variable_page_server import variable_reactivity
 
 from definitions.datawiki_page_ui import datawiki_page, datawiki_reactivity
 
 from definitions.publications_page_ui import publications_page
-
-from definitions.terms_and_styles import variable_time_choices
 
 here = Path(__file__).parent
 
@@ -30,13 +30,14 @@ app_ui = ui.page_fluid(
 
     ui.page_navbar(
         # ui.nav_spacer(),
+        welcome_page(tab_name='welcome_page'),
         overview_page(tab_name='overview_page'),
         variable_page(tab_name='variable_page'),
         datawiki_page(tab_name='datawiki_page'),
         publications_page(tab_name='publications_page'),
 
         id='main_navbar',
-        selected='overview_page',
+        selected='welcome_page',
         navbar_options=ui.navbar_options(
             position='fixed-top',  # Navbar is pinned at the top
             bg='white'),
@@ -49,6 +50,8 @@ app_ui = ui.page_fluid(
 
 
 def server(input, output, session):
+
+    welcome_reactivity(input, output)
 
     overview_reactivity('questionnaire', label = 'Questionnaires')
     overview_reactivity('measurements', label = 'Measurements')
