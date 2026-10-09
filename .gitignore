@@ -5,3 +5,4 @@ definitions/__pycache__/
 definitions/.DS_Store
 
 .vscode/
+.Rproj.user
