@@ -15,10 +15,10 @@ guru_colors = {'background-lightblue': '#e2e9f1',
 
 banner_panel = ui.div(ui.span(icon_svg('circle-exclamation'), style='color: #A32219'), 
                       ui.markdown('&ensp;*This app is currently <ins>under development</ins>! ' \
-                                  'Please check that the information is correct before reporting it.<br>' \
+                                  'Please check that the information is correct before reporting it.' \
                                   '&ensp;If you spot any errors or missing information, please let us know using GitHub issues or email.*'), 
                       style='display: inline-flex; padding-bottom: 0px; padding-top: 15px; padding-left: 20px; border-radius: 30px; ' \
-                            'font-size: 17px; color: #A32219; background-color: #ffeae5; border: 1px solid #A32219;')
+                            'font-size: 14px; color: #A32219; background-color: #ffeae5; border: 1px solid #A32219;')
 
 user_input_panel_style = f'padding-top: 20px; padding-right: 30px; padding-left: 30px; padding-bottom: 0px;' \
                          f'border-radius: 30px; ' \

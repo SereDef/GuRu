@@ -2,55 +2,69 @@ from shiny import ui, module, render, reactive
 
 from definitions.variable_page_backend import variable_table_style, variable_table_height, \
     filter_variable_table, search_variable_table, \
-    display_variable_info
+    display_variable_info, MAX_DISPLAY_ROWS
+
 
 @module.server
-def variable_reactivity(input, output, session, label = 'Questionnaires'):
+def variable_reactivity(input, output, session):
 
-    # Update the variable table ----------------------------------------------------
-    @reactive.Calc
-    def _filter_variable_table():
+    # Search parameters are captured only when the Search button is clicked ----------
+    search_params = reactive.value(None)
 
-        if label == 'Questionnaires':
-            selected_reporters = input.variable_selected_reporters()
-        else: 
-            selected_reporters = None
-
-        return filter_variable_table(  # selected_timepoints=input.variable_selected_time(),
-                                     selected_subjects=input.variable_selected_subjects(),
-                                     selected_reporters=selected_reporters,
-                                     selected_filenames=input.variable_selected_files()
-        )
-
-    @reactive.Effect
+    @reactive.effect
     @reactive.event(input.variable_search_button)
-    async def _search_variable_table():
-        search_terms = input.variable_search_terms().split(';')
+    def _capture_search_params():
+        search_params.set({
+            'search_terms': input.variable_search_terms().split(';'),
+            'search_domains': list(input.variable_search_domains1()),
+            'search_mode': input.variable_search_mode(),
+            'case_sensitive': input.variable_search_case_sensitive(),
+            'use_regex': input.variable_search_regex(),
+        })
 
-        variable_search_domains = list(input.variable_search_domains1())+list(input.variable_search_domains2())
+    # Single source for the displayed table: file filter (live) + search (on click) --
+    @reactive.calc
+    def _variable_table():
+        table = filter_variable_table(selected_filenames=input.variable_selected_files())
 
-        search_results_table = search_variable_table(table=_filter_variable_table(),
-                                                     search_terms=search_terms,
-                                                     search_domains=variable_search_domains,
-                                                     case_sensitive=input.variable_search_case_sensitive())
+        params = search_params()
+        if params is not None:
+            table = search_variable_table(table, **params)
 
-        await variable_df.update_data(search_results_table)
+        return table
 
     @render.data_frame
     def variable_df():
-        table_style = variable_table_style(_filter_variable_table())
-        table_height = variable_table_height(_filter_variable_table().shape[0])
+        # Search/filter already ran on the full table; only cap what is shipped to the client
+        table = _variable_table().head(MAX_DISPLAY_ROWS)
 
-        return render.DataTable(data=_filter_variable_table(),  # filters=True,
+        return render.DataTable(data=table,
                                 selection_mode='rows',
-                                width='98%', height=table_height,
-                                styles=table_style)
+                                width='98%',
+                                height=variable_table_height(table.shape[0]),
+                                styles=variable_table_style(table))
+
+    @render.ui
+    def variable_table_note():
+        n_total = _variable_table().shape[0]
+
+        if n_total > MAX_DISPLAY_ROWS:
+            note = f'Showing the first **{MAX_DISPLAY_ROWS:,}** of **{n_total:,}** variables — ' \
+                   f'use search to narrow the results and/or click on any row(s) to display additional information (under the table)'
+        else:
+            note = f'**{n_total:,}** variable(s) found.'
+
+        return ui.markdown(note)
 
     @render.ui
     def variable_selected_rows():
-        row_ids = variable_df.cell_selection()['rows']
-        if row_ids:
-            info = display_variable_info(row_ids)
-        else:
+        # Read the selection straight from the current view so it stays correct
+        # regardless of any filtering or searching that has been applied.
+        selected = variable_df.data_view(selected=True)
+
+        if selected.shape[0] == 0:
             info = 'None'
+        else:
+            info = display_variable_info(selected['Variable name'].tolist())
+
         return ui.markdown(f'Variables selected: {info}')

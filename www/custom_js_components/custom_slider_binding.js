@@ -22,7 +22,9 @@
 
     binding.subscribe = function(el, callback) {
         if (el.noUiSlider) {
-            el.noUiSlider.on('update', callback);
+            // noUiSlider calls the handler with (values, handle, ...); don't forward
+            // those to Shiny's callback, which expects input options, not slider values.
+            el.noUiSlider.on('update', function() { callback(); });
         }
     };
 

@@ -56,8 +56,7 @@ def server(input, output, session):
     overview_reactivity('questionnaire', label = 'Questionnaires')
     overview_reactivity('measurements', label = 'Measurements')
 
-    variable_reactivity('questionnaire', label = 'Questionnaires')
-    variable_reactivity('measurements', label = 'Measurements')
+    variable_reactivity('variable')
     
     datawiki_reactivity(input, output)
 

@@ -70,12 +70,14 @@ h6 {
     color: var(--genr-blue);
 }
 
-/* Style checkboxes */
-.shiny-input-container .checkbox input[type="checkbox"] {
+/* Style checkboxes (both stacked .checkbox and inline .checkbox-inline layouts) */
+.shiny-input-container .checkbox input[type="checkbox"],
+.shiny-input-container .checkbox-inline input[type="checkbox"] {
     border: 1px solid var(--genr-blue);
     margin-left: 7px;
 }
-.shiny-input-container .checkbox input[type="checkbox"]:checked {
+.shiny-input-container .checkbox input[type="checkbox"]:checked,
+.shiny-input-container .checkbox-inline input[type="checkbox"]:checked {
     background-color: var(--genr-blue);
 }
 

@@ -63,7 +63,8 @@ def multicol_checkbox_selector(page_id, item_id, multicol_options_dict):
             id=f"{page_id}_{item_id}{idx}",
             label=label,
             choices=choices_dict,
-            selected=list(choices_dict.keys())
+            selected=list(choices_dict.keys()),
+            inline=True  # lay choices out on a single row
         )
 
         columns.append(checkbox_group)
@@ -109,9 +110,9 @@ def search_panel(page_id):
             gap='0px')
         
         search_domains = {'col1': {'Variable name': 'Variable names',
-                                   'Variable label': 'Variable labels'},
-                          'col2': {'Reference': 'Reference',
-                                   'constructs': 'Constructs'}}
+                                   'Variable label': 'Variable labels'}}
+        # --- Reference / constructs search is disabled for now ---
+        # 'col2': {'Reference': 'Reference', 'constructs': 'Constructs'}
 
         regex_switch = ui.div(ui.input_switch(id=f'{page_id}_search_regex', label='Use RegEx', value=False),
                               style='margin-top: -10px')
@@ -140,7 +141,9 @@ def search_panel(page_id):
 
 
 def file_selector(page_id):
-    file_options = [f for f in metadata_table.orig_file.unique() if ';' not in f]
+    # 'files' holds one or more "; "-separated file names; offer each distinct name
+    file_options = sorted({f.strip() for files in metadata_table['files']
+                           for f in str(files).split(';')})
 
     return ui.input_selectize(id=f'{page_id}_selected_files',
                               label=ui.tooltip(ui.h6('File(s) ', icon_svg('circle-info')),
