@@ -5,6 +5,7 @@ from pathlib import Path
 from definitions.welcome_page_ui import welcome_page
 from definitions.overview_page_ui import overview_page
 from definitions.variable_page_ui import variable_page
+from definitions.datadive_page_ui import datadive_page, datadive_reactivity
 
 from definitions.welcome_page_server import welcome_reactivity
 from definitions.overview_page_server import overview_reactivity
@@ -33,6 +34,7 @@ app_ui = ui.page_fluid(
         # ui.nav_spacer(),
         welcome_page(tab_name='welcome_page'),
         overview_page(tab_name='overview_page'),
+        datadive_page(tab_name='datadive_page'),
         variable_page(tab_name='variable_page'),
         datawiki_page(tab_name='datawiki_page'),
         publications_page(tab_name='publications_page'),
@@ -68,7 +70,9 @@ def server(input, output, session):
     overview_reactivity('measurements', label = 'Measurements')
 
     variable_reactivity('variable')
-    
+
+    datadive_reactivity(input, output)
+
     datawiki_reactivity(input, output)
 
 

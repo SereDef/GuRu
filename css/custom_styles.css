@@ -366,3 +366,52 @@ shiny-data-frame .shiny-data-grid > table > thead {
 .noUi-target {
     border-radius: 10px !important;
 }
+
+
+/* ---- Data Dives: clickable subset cards ---- */
+.datadive-card {
+    width: 100%;
+    height: 100%;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px 16px;
+    background: var(--background-lightblue);
+    color: var(--genr-blue) !important;
+    border: 0px solid var(--genr-lightblue);
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    white-space: normal;
+    text-align: center;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.datadive-card:hover {
+    background: var(--genr-lightblue);
+    color: white !important;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(44, 60, 148, 0.25);
+}
+.datadive-card svg {
+    fill: currentColor;
+}
+.datadive-card-title {
+    margin-top: 2px;
+}
+
+/* 'Back to Data Dives' link */
+.datadive-back {
+    color: var(--genr-lightblue);
+    text-decoration: none;
+    font-size: 14px;
+}
+.datadive-back:hover {
+    color: var(--genr-blue);
+}
+.datadive-back svg {
+    fill: currentColor;
+    height: 0.9em;
+}
