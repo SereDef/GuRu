@@ -1,4 +1,5 @@
 from shiny import App, ui
+from faicons import icon_svg
 from pathlib import Path
 
 from definitions.welcome_page_ui import welcome_page
@@ -35,6 +36,16 @@ app_ui = ui.page_fluid(
         variable_page(tab_name='variable_page'),
         datawiki_page(tab_name='datawiki_page'),
         publications_page(tab_name='publications_page'),
+
+        # Push the GitHub link to the top-right corner of the navbar
+        ui.nav_spacer(),
+        ui.nav_control(
+            ui.a(icon_svg('github', height='1.6em'),
+                 href='https://github.com/SereDef/GuRu',
+                 target='_blank',
+                 title='GitHub repository',
+                 style='color: var(--genr-blue);')
+        ),
 
         id='main_navbar',
         selected='welcome_page',
