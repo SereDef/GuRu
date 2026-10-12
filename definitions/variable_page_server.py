@@ -1,7 +1,7 @@
 from shiny import ui, module, render, reactive
 
 from definitions.variable_page_backend import variable_table_style, variable_table_height, \
-    filter_variable_table, search_variable_table, \
+    filter_variable_table, search_variable_table, grey_separators, \
     display_variable_info, MAX_DISPLAY_ROWS
 
 
@@ -36,7 +36,7 @@ def variable_reactivity(input, output, session):
     @render.data_frame
     def variable_df():
         # Search/filter already ran on the full table; only cap what is shipped to the client
-        table = _variable_table().head(MAX_DISPLAY_ROWS)
+        table = grey_separators(_variable_table().head(MAX_DISPLAY_ROWS))
 
         return render.DataTable(data=table,
                                 selection_mode='rows',
@@ -63,8 +63,7 @@ def variable_reactivity(input, output, session):
         selected = variable_df.data_view(selected=True)
 
         if selected.shape[0] == 0:
-            info = 'None'
-        else:
-            info = display_variable_info(selected['Variable name'].tolist())
+            return ui.markdown('Variables selected: None')
 
-        return ui.markdown(f'Variables selected: {info}')
+        info = display_variable_info(selected['Variable name'].tolist())
+        return ui.HTML(f'<div class="var-summary">{info}</div>')

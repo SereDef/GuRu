@@ -5,12 +5,25 @@
     --background-lightblue: #e2e9f1;
 }
 
+/* Global text size: 14px everywhere, incl. selectors and tables */
+body,
+.form-select,
+.form-control,
+.selectize-input,
+.selectize-dropdown,
+.shiny-data-grid,
+.shiny-data-grid table,
+.shiny-data-grid th,
+.shiny-data-grid td {
+    font-size: 14px;
+}
+
 /* Style main navigation bar */
 .navbar {
     background-color: white !important;
 }
 #main_navbar .nav-link {
-    font-size: 17px;
+    font-size: 16px;
     color: var(--genr-lightblue) !important;
 }
 #main_navbar .nav-item .nav-link.active {
@@ -40,6 +53,7 @@ body {
 }
 */
 h6 {
+    font-size: 14px;
     font-weight: bold;
     color: var(--genr-lightblue);
 }
@@ -49,7 +63,7 @@ h6 {
     background-color: var(--genr-blue);
     color: white;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
     border: none;
     border-radius: 30px;
@@ -116,23 +130,219 @@ h6 {
 }
 
 
+/* ---- Search panel layout ---- */
+
+/* Vertically centre the Search button against the search text box */
+.search-row {
+    align-items: flex-end;   /* button bottom lines up with the input bottom */
+}
+.search-button-wrap {
+    display: flex;
+    justify-content: flex-end;   /* keep the button on the right */
+}
+
+/* 'Matching:' + its checkboxes: all on one line, right-aligned under the button */
+.matching-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;   /* line the group up on the right, with the button */
+    gap: 4px 12px;
+}
+.matching-group .matching-label {
+    margin: 0;                   /* drop the default h6 bottom margin */
+}
+.matching-group .shiny-input-container {
+    margin-bottom: 0;            /* remove the stacked vertical spacing */
+    width: auto;
+}
+/* hide any empty label the checkbox groups still render */
+.matching-group .shiny-input-container > .control-label:empty {
+    display: none;
+    margin: 0;
+}
+
+
 /* Table styles */
 shiny-data-frame .shiny-data-grid > table > thead {
     z-index: 10; /* Ensure headers are above other elements */
 }
 
+/* Center the 'Type' (3rd) and 'N observed' (4th) column headers on the variable page */
+#variable-variable_df .shiny-data-grid thead th:nth-child(3),
+#variable-variable_df .shiny-data-grid thead th:nth-child(4) {
+    text-align: center;
+}
+
+
+/* ---- Selected-variable summaries (shown below the table) ---- */
+.var-summary {
+    font-size: 14px;
+}
+.var-block {
+    padding: 10px 0 12px;
+    border-bottom: 1px solid var(--background-lightblue);
+}
+.var-block:last-child {
+    border-bottom: none;
+}
+.var-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.var-head strong {
+    color: var(--genr-blue);
+    font-size: 15px;
+}
+.var-type-badge {
+    font-size: 12px;
+    /* font-weight: bold; */
+    color: var(--genr-lightblue);
+    background: var(--background-lightblue);
+    border-radius: 12px;
+    padding: 1px 10px;
+}
+.var-n {
+    font-size: 12px;
+    color: #777;
+}
+.var-label {
+    color: #444;
+    margin: 2px 0 6px;
+}
+
+/* Numeric variants: one compact table, one row per distinct distribution */
+.var-num {
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 4px 0;
+}
+.var-num th,
+.var-num td {
+    border: 1px solid var(--genr-lightblue);
+    padding: 2px 10px;
+    text-align: right;
+}
+.var-num th {
+    color: var(--genr-blue);
+    font-weight: 600;
+}
+
+/* Categorical variants: each distinct level-set in its own boxed card */
+.var-cat-variant {
+    border: 1px solid var(--genr-lightblue);
+    border-radius: 8px;
+    padding: 6px 10px;
+    margin: 8px 0;
+    background: #fff;
+}
+.var-cat {
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 0;
+}
+.var-cat td {
+    padding: 1px 8px;
+    vertical-align: middle;
+}
+.var-cat .lvl {
+    text-align: left;
+}
+.var-cat .cnt {
+    text-align: right;
+    color: #555;
+    white-space: nowrap;
+}
+.var-bar {
+    width: 140px;
+    height: 10px;
+    background: var(--background-lightblue);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.var-bar > div {
+    height: 100%;
+    background: var(--genr-blue);
+    border-radius: 3px;
+}
+
+.var-line {
+    font-size: 14px;
+    margin: 3px 0;
+}
+.var-line .cnt {
+    color: #777;
+}
+.var-more {
+    color: #888;
+    font-size: 12px;
+    font-style: italic;
+    margin: 2px 0 4px;
+}
+
+/* Variable details (left, 65%) and files (right, 35%) side by side, top-aligned */
+.var-cols {
+    display: flex;
+    align-items: flex-start;
+}
+.var-col-summary,
+.var-col-files {
+    box-sizing: border-box;
+}
+.var-col-summary {
+    flex: 0 0 65%;
+    max-width: 65%;
+    min-width: 0;
+    padding-right: 24px;
+}
+.var-col-files {
+    flex: 0 0 35%;
+    max-width: 35%;
+}
+
+/* Files the variable appears in */
+.var-files {
+    margin: 6px 0 2px;
+}
+.var-files-head {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--genr-lightblue);
+}
+.var-files-list {
+    margin: 2px 0;
+    padding-left: 20px;
+    font-size: 14px;
+    color: #444;
+}
+.var-files-list li {
+    margin: 1px 0;
+}
+.var-files-list li.var-more {
+    list-style: none;
+    margin-left: -12px;
+}
+
 
 /* Tilt and align noUiSlider pip labels */
 .discrete-slider .noUi-value {
-    color: var(--genr-lightblue) !important; 
-    font-size: 16px;
-    transform: rotate(25deg) !important; 
+    color: var(--genr-lightblue) !important;
+    font-size: 12px;
+    transform: rotate(20deg) !important; 
     transform-origin: top left;
     text-align: left;
     display: inline-block;
     white-space: nowrap;
     margin-top: 10px;
     margin-left: -2px;
+}
+
+/* Make the tick marks shorter and thinner (applies to all markers) */
+.discrete-slider .noUi-marker {
+    width: 1px !important;   /* less thick (default 2px) */
+    height: 4px !important;    /* smaller  (default 5px / 10px) */
 }
 
 .discrete-slider .noUi-connect {

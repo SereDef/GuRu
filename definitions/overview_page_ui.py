@@ -35,7 +35,7 @@ def overview_tab(label: str):
         # Selection pane
         ui.div(
             ui.row(timepoint_slider, 
-                   style='margin-bottom: 100px; margin-top: 20px; margin-left: 30px; margin-right: 35px;'),
+                   style='margin-bottom: 70px; margin-top: 20px; margin-left: 30px; margin-right: 35px;'),
             ui.row(ui.layout_columns(
                 search_panel(page_id=page_id), 
                 subject_checkbox,

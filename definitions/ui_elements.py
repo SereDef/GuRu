@@ -47,30 +47,28 @@ def checkbox_selector(page_id, item_id, item_label, options_dict):
 
 
 def multicol_checkbox_selector(page_id, item_id, multicol_options_dict):
-    """Creates a dynamic number of checkbox group columns based on the options dictionary keys."""
+    """Lay 'Matching:' and every checkbox option out inline on a single, right-aligned row."""
 
-    columns = []
-    # Loop over each key (column) in the dictionary
+    checkbox_groups = []
+    # One checkbox group per key, kept separate so the server can still read
+    # {page_id}_{item_id}1 / 2 / 3 independently.
     for idx, (col_key, choices_dict) in enumerate(multicol_options_dict.items(), start=1):
-        # Prepare label; use plain text for first column, colored div for others as example
-        if idx == 1:
-            label = "Matching:"
-        else:
-            label = ui.div("blank", style=f'color: {guru_colors["background-lightblue"]};')
-        
-        # Create input_checkbox_group for this column
-        checkbox_group = ui.input_checkbox_group(
-            id=f"{page_id}_{item_id}{idx}",
-            label=label,
-            choices=choices_dict,
-            selected=list(choices_dict.keys()),
-            inline=True  # lay choices out on a single row
+        checkbox_groups.append(
+            ui.input_checkbox_group(
+                id=f"{page_id}_{item_id}{idx}",
+                label=None,            # no per-group label; 'Matching:' prefixes the whole row
+                choices=choices_dict,
+                selected=list(choices_dict.keys()),
+                inline=True            # options on a single row
+            )
         )
 
-        columns.append(checkbox_group)
-
-    # Return a layout_columns with all the generated checkbox groups
-    return ui.layout_columns(*columns)
+    # 'Matching:' label followed by all checkbox groups, all on one line (see .matching-group CSS)
+    return ui.div(
+        ui.h6("Matching:", class_="matching-label"),
+        *checkbox_groups,
+        class_="matching-group"
+    )
 
 def search_panel(page_id):
 
@@ -114,8 +112,7 @@ def search_panel(page_id):
         # --- Reference / constructs search is disabled for now ---
         # 'col2': {'Reference': 'Reference', 'constructs': 'Constructs'}
 
-        regex_switch = ui.div(ui.input_switch(id=f'{page_id}_search_regex', label='Use RegEx', value=False),
-                              style='margin-top: -10px')
+        regex_switch = ui.input_switch(id=f'{page_id}_search_regex', label='Use RegEx', value=False)
 
     search_group = ui.div(
          ui.layout_columns(
@@ -123,19 +120,22 @@ def search_panel(page_id):
              ui.div(ui.input_action_button(id=f'{page_id}_search_button',
                                       label='Search',
                                       class_='guru-button'),
-               style='float: right; margin-top: 32px; margin-bottom: -5px'),
-             col_widths=[8, 4]),
+               class_='search-button-wrap'),
+             col_widths=[10, 2],
+             class_='search-row'),
         ui.layout_columns(
             ui.div(
                 ui.input_switch(id=f'{page_id}_search_case_sensitive',
                                 label='Case sensitive',
                                 value=False),
-                regex_switch),
+                regex_switch,
+                style='display: flex; gap: 40px'),
                 multicol_checkbox_selector(page_id=page_id, item_id='search_domains',
                                            multicol_options_dict=search_domains),
             gap='10px',
-            col_widths=[4, 8]),
-        style='margin-left: 20px')
+            col_widths=[5, 7],
+            style='margin-bottom: -5px'),
+        style='margin-left: 10px; margin-right: 100px')
 
     return search_group
 

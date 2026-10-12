@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime
 # from definitions.ui_elements import file_selector
 
-from definitions.terms_and_styles import user_input_panel_style, banner_panel
+from definitions.terms_and_styles import user_input_panel_style, banner_panel, last_updated_banner
 
 
 # ==========================================================================================
@@ -111,9 +111,7 @@ def datatype_selector(page_id):
 def datawiki_page(tab_name):
     return ui.nav_panel(" DataWiki map",
                         banner_panel,
-                        ui.div(
-                            ui.markdown(f"Last updated on: <span style='color: var(--genr-blue);'>**{update_date}**</span>"),
-                            style="text-align: right; padding-right: 20px; padding-bottom: 0px; margin: 0"),
+                        last_updated_banner(update_date),
                         # Selection pane
                         ui.div(
                             ui.layout_columns(

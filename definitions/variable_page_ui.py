@@ -3,7 +3,8 @@ from faicons import icon_svg
 
 from definitions.ui_elements import file_selector, search_panel
 # from definitions.ui_elements import discrete_timepoint_slider, checkbox_selector
-from definitions.terms_and_styles import user_input_panel_style, banner_panel
+from definitions.terms_and_styles import user_input_panel_style, banner_panel, last_updated_banner
+from definitions.variable_page_backend import update_date
 # from definitions.terms_and_styles import subject_choices, reporter_choices, \
 #     variable_time_choices, time_points_available
 
@@ -47,6 +48,7 @@ def variable_page(tab_name):
     # One big table for all variables (questionnaires and hands-on measurements combined)
     return ui.nav_panel(' Variable metadata',
                         banner_panel,
+                        last_updated_banner(update_date),
                         variable_tab('variable'),
                         icon=icon_svg('table'),
                         value=tab_name)
