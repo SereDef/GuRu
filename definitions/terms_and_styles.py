@@ -20,6 +20,13 @@ banner_panel = ui.div(ui.span(icon_svg('circle-exclamation'), style='color: #A32
                       style='display: inline-flex; padding-bottom: 0px; padding-top: 15px; padding-left: 20px; border-radius: 30px; ' \
                             'font-size: 14px; color: #A32219; background-color: #ffeae5; border: 1px solid #A32219;')
 
+def placeholder_panel(text):
+  return ui.div(ui.span(icon_svg('circle-exclamation'), style='color: #fe9000fc'), 
+                ui.markdown(f'&ensp;{text}'), 
+                style='display: inline-flex; padding-bottom: 0px; padding-top: 15px; padding-left: 20px; border-radius: 30px; ' \
+                            'font-size: 14px; color: #fe9000fc; background-color: #ffebd1fc; border: 1px solid #fe9000fc;')
+
+
 def last_updated_banner(update_date):
     """Right-aligned 'Last updated on: <date>' line, shown just below the banner."""
     return ui.div(
