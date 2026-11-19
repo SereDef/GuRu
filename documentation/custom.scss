@@ -1,0 +1,41 @@
+/*-- scss:defaults --*/
+
+// Brief GuRu theme — tweak these few tokens to restyle the whole deck.
+$ink:        #1b2a4a;   // headings / primary text
+$accent:     #2f7d95;   // links, rules, highlights
+$muted:      #6b7685;   // subtitles, captions
+
+$darkblue: #00008B;    /* Dark blue (footer/links) */
+$purple: #4859ab;   /* Light blue (code) */
+$grey: #959597ff;
+
+/* Extended Color Palette */
+$lightpurple: #ecefffff;
+$verdigris: #0b9181ff;
+$jasmine: #e9c46a;
+$sandybrown: #f4a261;
+$burntpeach: #ff8533ff;
+$orange: rgb(213, 82, 0);
+
+$body-color:            $ink;
+$link-color:            $purple;
+$presentation-heading-color: $darkblue;
+$presentation-heading-font-weight: 550;
+
+/*-- scss:rules --*/
+
+$text-colors: (
+  "darkblue":   $darkblue,
+  "purple":     $purple,
+  "grey":       $grey,
+  "lightpurple":$lightpurple,
+  "green":      $verdigris,
+  "jasmine":    $jasmine,
+  "sandybrown": $sandybrown,
+  "burntpeach": $burntpeach,
+  "orange":     $orange,
+);
+
+@each $name, $color in $text-colors {
+  .#{$name} { color: $color; }
+}

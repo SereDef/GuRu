@@ -1,0 +1,407 @@
+---
+title: "GuRu update and planning"
+subtitle: "File name protocol"
+author: "Serena Defina"
+date: today
+format:
+  html:
+    embed-resources: true
+    theme: [simple, custom.scss]
+---
+
+[GuRu app](https://seredef-guru.share.connect.posit.cloud/)
+
+Documentation for **file name formatting** and **data storage guidelines** for Generation R. 
+
+## General guidelines for structuring data into files
+
+1. **Grouping measures into files**: each fle should contain a <ins>*minimal* variable set</ins> (e.g. a single section, measure, time-point /assessment), avoid combining multiple measurement waves or assessments, unless necessary (PI approve variable grouping)
+2. Each files should contain the relevant *age at measurement* variable(s)
+3. During cleaning, enforce <ins>labels</ins> for **values**, **variables** and ***files***. You can create a file label in SPSS like so:
+
+    ```{}
+    DOCUMENT
+      "Created by: Person Person"
+      "Source: rec02mo, rec06mo ..."
+      "Notes: This dataset contains 6 waves from GGD + questionnaires for children living outside of Rotterdam".
+
+      # view with DISPLAY DOCUMENTS.
+    ```
+
+## File names 
+
+### **`<subject>_<content>_<wave>_<date>`**
+
+:::{.column width=16%}
+`<subject>`
+
+* Child
+* Mother
+* Partner
+* Family 
+* [Fetal?]{.grey}
+:::
+:::{.column width=20%}
+`<content>`
+
+Agreed with PIs & *consistent* across waves 
+
+**controlled vocabulary** based on 
+
+* <ins>content table</ins> e.g. "Anthropometry" vs. "Growth" 
+* <ins>abbreviation reference</ins> e.g. CBCL, DXA
+:::
+
+:::{.column width=20%}
+`<wave>`
+
+**Time** & **sample** indicator 
+
+Used in: 
+
+* <ins>sample size overlap</ins> tool
+* <ins>time map</ins>
+
+:::
+:::{.column width=25%}
+`<date>`
+
+Last update 
+
+format: **YYYYMMDD**
+:::
+
+## `<content>`
+
+* Controlled vocabulary for `<content>`
+  - Use the **content table** for consistent labeling (with PIs providing feedback on it) [attach example, or GuRu Data Overview page]
+  - Keep it *informative* (e.g. questionnaire sections are less relevant than content) e.g.  `Mother_G07-10_GR1001_20250919` --> `Partner_Lifestyle_qumIntake-G_20250919`
+
+
+## `<wave>` definition
+
+Should be a *unique sample size indicator*: i.e. holds info about data-type, time and (sub)sample (see examples below)
+
+[**Data type**]{.green}
+
+* `qu` (questionnaire) `vi` (visit) `in` (interview) `ex` (external record: i.e. pharmacy, school, GGD) `re` (home / other recording, e.g. actigraphy, app data) `zc` (zip code)<br>[<ins>biosamples</ins>]{.grey}: `bl` (blood) `ur` (urine) `sa` (saliva) `ns` (nasal swab) `ha` (hair) `fe` (feces) `sp` (sperm)
+* reporter/subject specifier: `m` (main caregiver) `p` (partner) `c` (child) `t` (teacher) `h` (home)
+
+[**Time**]{.green}
+
+* based on (rounded) **median child age** at measurement
+* format: 2 digits (e.g. `06`)
+* *scale*: 
+  - `wg` (weeks gestation) for prenatal measures 
+  - `mo` (months old) for postnatal measures until 4 years 
+  - `yr` (years old) from 4 years onwards
+* exception: `Intake` (~12wg but variable) and `Birth`
+
+> *Non-unique* data-type + time instances append a count: e.g. `qumIntake1`, `qumIntake2`
+
+[**Sub-samples**]{.green} / [**subsets** [by *design*]]{.green}
+
+Special visits and "sub-studies" (i.e. subsets of participants with <ins>selection criteria</ins>) are indicated by a dedicated `sub<Name>-` specifier: 
+
+*  **Focus cohort**: e.g. `subFocus-vim32wg`
+*  **MRI substudy**: `subMRI-vic08yr` 
+*  **Sleep study**: (note: *bimodal age*)  `subSleep-rec11yr`, `subSleep-qum11yr` or `subSleep-rec10-14yr` 
+*  **App** ("tracking teens"?) `subApp-rec13yr`, `subApp-rec17yr` 
+*  **COVID** / *coKids* (long covid?) `subCOVID-quc13yr`
+*  **BLBC** study? `subBLBC-[...]`
+*  other? 
+
+Other *"unintended subsets"* (i.e. specific measures within visits (e.g. ultrasound, DXA, MRI, FeNO) or metrics extracted from biosamples (e.g. DNA, DNAm...), for which sample size is smaller for logistic or consent reasons, but no explicit selection criteria was applied) 
+
+- [x] are indicated in the `<content>` portion of the filename: 
+  - e.g. `Fetal_KidneyUltrasound_vimIntake`, `Mother_FatMass-DXA_vim14yr`, `Child_BrainMRI_vic10yr` or `Child_CorticalSegmentation-BrainMRI_vic10yr`
+
+- [ ] [are indicated by a `-<subset>` tab after main wave specifier: ]{.grey}
+  - [e.g. `Fetal_Kidney_vimIntake-US`, `Mother_FatMass_vim14yr-DXA`, `Child_Brain_vic10yr-MRI` or `Child_CorticalSegmentation_vic10yr-BrainMRI`]{.grey}
+
+*Questionnaire sections* ([add specifier to wave?]{.orange}):
+
+*  e.g. `Mother_G07-10_GR1001` $\rightarrow$ `Partner_Lifestyle_qumIntake-G`
+
+
+[**Collections** / **aggregate** measures]{.green}
+
+Are indicated with a `.` and linked to controlled vocabulary
+
+* over <ins>time</ins>: e.g. `qu.Preg`, `vi.Preg`, `qu.0-10yr`, `subFocus-vi.01-12mo` ?
+* over <ins>data types</ins>: generic `ms.Preg-18yr` ([multiple sources]{.orange}) or specific tags e.g. consultatiebureau data + questionnaire report (south): `GGD.02-48mo`
+* over <ins>reporters</ins>: e.g. mother + partner reports: `qu.10yr`
+
+["**Addional info**" measures]{.grey} 
+
+* *GR1026* (24-week variant of intake questionnaire for later-enrolling mothers) and *GR1031* (birth / 1 month postpartum mothers and partners recruited postnatally) are merged in `qumIntake1` (with GR1001)
+* *unexpected symptoms* questionnaires (always included with a main questionnaire... use a special tag?)
+* *GR1069* / *70* (background/education missing data): merged with [...]? 
+* *GR1073* / *74* (south of Rotterdam questionnaires): merged with [...]? 
+* *GR1071* / *72* / *77* (GGD data filler for children living outside of Rotterdam): merge with `GGD`?
+
+:::{.callout-note title="Pregnancy" collapse="true"}
+
+**Questionnaires**
+
+* `qumIntake1` (questionnaire main caregiver / mother ~ 12 weeks / intake) [GR1001] + [GR1026] + [GR1031] 
+* `qumIntake2` (questionnaire main caregiver / mother ~ 15 weeks) [GR1002]
+* `qum20wg`  (questionnaire main caregiver / mother ~ 20 weeks) [GR1003]
+* `qup20wg`  (questionnaire partner ~ 20 weeks) [GR1004]
+* `qum30wg`  (questionnaire main caregiver / mother ~ 30 weeks) [GR1005]
+
+**Center visits** [[anthropometry, BP, fetal ultrasound]]{.grey}
+
+* `vimIntake` (visit mother ~ 12 weeks / intake)
+* `vipIntake` (visit partner ~ 12 weeks / intake)
+* `vim20wg` (visit mother ~ 20 weeks)
+* `vim30wg` (visit mother ~ 30 weeks) [--> <ins>not</ins> a home visit, right? correct wiki]{.orange}
+
+**Biosamples**
+
+* `blmIntake` (blood mother ~ 12 weeks) [[sub: DNA?]]{.grey}
+* `blpIntake` (blood partner ~ 12 weeks) [[sub:  DNA?]]{.grey}
+* `blm20wg` (blood mother ~ 20 weeks)
+* `urmIntake` (urine mother ~ 12 weeks) [*subsample?]{.grey}
+* `urm20wg` (urine mother ~ 20 weeks) [*subsample?]{.grey}
+* `urm30wg` (urine mother ~ 30 weeks) [*subsample?]{.grey}
+
+**Sub-samples**
+
+* `subFocus-vim32wg` (visit mother ~ 32 weeks - focus cohort) [[Detailed fetal ultrasound]]{.grey}
+* `subFocus-inm32wg` (interview mother ~ 32 weeks - focus cohort) [[FHRDC, PRAQ]]{.grey}
+* `subFocus-inp32wg` (interview partner ~ 32 weeks - focus cohort) [[FHRDC]]{.grey}
+  * [some interviews were conducted at 6 month postpartum instead, merged?]{.orange}
+
+**Records**
+
+* `exmPreg` - pharmacy records
+
+:::
+
+:::{.callout-note title="Birth" collapse="true"}
+**Biosamples**
+
+* `blcBirth` (cord blood birth) [[sub:  DNA, DNAm, ...?]]{.grey}
+
+**Records**
+
+* `excBirth` (record child birth "partusverslagen") [[birth weight, gest. age, pregnancy/delivery complications]]{.grey} ... ["NeonatalScreening"]{.orange} ? 
+* `zchBirth` (zip code home birth)
+
+:::
+
+:::{.callout-note title="0-4 years" collapse="true"}
+
+**Questionnaires**
+
+* `qum02mo1` (questionnaire mother ~ 2 months) [GR1018] [*about child]{.grey}
+* `qum02mo2` (questionnaire mother ~ 2 months) [GR1019] [*about self]{.grey}
+* `qum06mo1` (questionnaire mother ~ 6 months) [GR1024] [*about self]{.grey}
+* `qum06mo2` (questionnaire mother ~ 6 months) [GR1025] [*about child]{.grey}
+* `qum12mo1` (questionnaire mother ~ 1 year) [GR1028]
+* `qum12mo2` (questionnaire mother ~ 1 year) [GR1060] [*diet]{.grey} [\*subsample?]{.orange}
+* `qum18mo` (questionnaire mother ~ 1.5 years) [GR1029]
+* `qum24mo` (questionnaire mother ~ 2 years) [GR1032]
+* `subFocus-qum24mo` (questionnaire mother ~ 2 years - [focus cohort?]{.orange}) [GR1064] [*diet]{.grey} [\*subsample]{.grey}
+* `qum30mo` (questionnaire mother ~ 2.5 years) [GR1062] [*interview / task]{.grey}
+* `qum36mo` (questionnaire mother ~ 3 years) [GR1065] 
+* `qup36mo` (questionnaire partner ~ 3 years) [GR1066] 
+* `qum48mo` (questionnaire mother ~ 4 years) [GR1067] 
+
+**Records** [[GGD data]]{.grey}
+
+* `exc02mo` (record child ~ 2 months)
+* `exc03mo` (record child ~ 3 months)
+* `exc04mo` (record child ~ 4 months)
+* `exc06mo` (record child ~ 6 months)
+* `exc11mo` (record child ~11 months)
+* `exc14mo` (record child ~14 months)
+* `exc18mo` (record child ~18 months)
+* `exc24mo` (record child ~24 months)
+* `exc30mo` (record child ~30 months)
+* `exc36mo` (record child ~36 months)
+* `exc45mo` (record child ~45 months)
+* [<ins>Aggregate</ins>]{.green} `GGD.02-48mo` (including questionnaires for children outside Rtdm) [?]{.orange}
+
+**Home visits** 
+
+* `vih03mo` (visit home ~ 3 months) [[*"Thuisobservatie Sociale Determinanten"*]]{.grey} ["HomeVisit0Y"??]{.orange}
+* `subFocus-vih06mo` (visit home ~ 6 months - focus cohort) [--> only for those who did not complete it at 32wg ?]{.orange}
+* `subFocus-vih48mo` (visit home ~ 4 years - focus cohort) [this was a <ins>home</ins>, not center visit (?) correct wiki]{.orange}
+
+**Center visits** (focus cohort only)
+
+* `subFocus-vic01mo` (visit child ~ 6 weeks - focus cohort)
+* `subFocus-vic06mo` (visit child ~ 6 month - focus cohort)
+* `subFocus-vic14mo` (visit child ~14 month - focus cohort)
+* `subFocus-vic24mo` (visit child ~ 2 years - focus cohort) [in focus only (?) correct wiki]{.orange}
+* `subFocus-vic36mo` (visit child ~ 3 years - focus cohort)
+
+**Biosamples**
+
+* `subFocus-nsc01mo` (nasal swab child ~ 6 weeks) [[bacterial colonization]]{.grey}
+* `subFocus-nsc06mo` (nasal swab child ~ 6 months) 
+* `subFocus-nsc14mo` (nasal swab child ~ 1 year) 
+* `subFocus-nsc24mo` (nasal swab child ~ 2 years) 
+* `subFocus-nsm24mo` (nasal swab [mother (?)]{.orange} ~ 2 years)
+* `subFocus-nsc36mo` (nasal swab child ~ 3 years)
+* `subFocus-blc06mo` (blood child ~ 6 months) [*subsample? (~30% consent)]{.orange}
+* `subFocus-blc14mo` (blood child ~ 1 year) [*subsample? (~30% consent)]{.orange}
+* `subFocus-blc24mo` (blood child ~ 2 years) [*subsample? (~30% consent)]{.orange}
+* `subFocus-sac06mo` (saliva child ~ 6 months)
+* `subFocus-sac14mo` (saliva  child ~ 1 year) + `sah14mo` ([salivette - also focus?]{.orange}) [[cortisol day rhythm/immunology]]{.grey}
+* `subFocus-sac24mo` (saliva child ~ 2 years)
+* `subFocus-sac36mo` (saliva child ~ 3 years)
+
+
+:::
+
+:::{.callout-note title="5-8 years" collapse="true"}
+
+**Questionnaires**
+
+* `qum06yr1` (questionnaire mother ~ 6 years) [GR1075] [*before visit]{.grey}
+* `qum06yr2` (questionnaire mother ~ 6 years) [GR1076] [*sent home after visit]{.grey}
+* `qut07yr` (questionnaire teacher ~ 7 years) [GR1079] [*TRF]{.grey} [why is this marked as 2008-2012?]{.orange}
+* `qum08yr` (questionnaire mother ~ 8 years) [GR1080] [*diet]{.grey}
+
+**Center visits** 
+
+* `vic06yr` (visit child ~ 6 years) [--> <ins>not</ins> a home visit, right? correct wiki]{.orange}
+* `vim06yr` (visit mother ~ 6 years)
+* `subMRI-vic08yr` (visit child ~ 8 years - MRI subsample)
+
+**Biosamples**
+
+* `blc06yr` (blood child ~ 6 years) [[DNAm]]{.grey}
+* `blm06yr` (blood mother ~ 6 years)
+* `hac06yr` (hair child ~ 6 years) [*subsample (40%)]{.orange}
+* `ham06yr` (hair mother ~ 6 years) [*subsample (30%)]{.orange}
+* `urc06yr` (urine child ~ 6 years)
+* `nsc06yr` (nasal swab child ~ 6 years)
+* `sac06yr` (saliva child ~ 6 years) [[Saliva dairy (cortisol)?]]{.grey}
+
+**Records**
+
+* `zch06yr` (zip code home ~ 6 years)
+
+:::
+
+:::{.callout-note title="9-12 years" collapse="true"}
+
+**Questionnaires**
+
+* `qum10yr1` (questionnaire mother ~ 10 years) [GR1081]
+* `qum10yr2` (questionnaire mother ~ 10 years) [GR1082]
+* `qup10yr` (questionnaire partner ~ 10 years) [GR1083]
+* `quc10yr` (questionnaire child ~ 10 years) [GR1084]
+
+**Center visits** 
+
+* `vic10yr` (visit child ~ 10 years)
+* `vim10yr` (visit mother ~ 10 years)
+
+
+**Biosamples**
+
+* `blc10yr` (blood child ~ 10 years) [[DNAm]]{.grey}
+* `blm10yr` (blood mother ~ 10 years)
+* `hac10yr` (hair child ~ 10 years)
+* `ham10yr` (hair mother ~ 10 years)
+* `urc10yr` (urine child ~ 10 years)
+* `urm10yr` (urine mother ~ 10 years)
+* `nsc06yr` (nasal swab child ~ 10 years)
+* `fec06yr` (faeces child ~ 10 years) 
+
+**Records**
+
+* `exc11yr-CITO` ?? [CITO?]{.orange}
+* `subSleep-rec11yr` [**sleep study** + accelerometer 11-14yrs in 2 waves check actual median]{.orange} 
+
+:::
+
+:::{.callout-warning title="13-16 years" collapse="true"}
+
+**Questionnaires**
+
+* `qum14yr1` (questionnaire mother ~ 14 years) [GR1093]
+* `qum14yr2` (questionnaire mother ~ 14 years) [GR1094]
+* `quc14yr1` (questionnaire child ~ 14 years) [GR1095]
+* `quc14yr2` (questionnaire child ~ 14 years) [GR1096]
+* COVID questionnaires???
+
+**Home visits** ?? there was one planned?
+
+**Center visits** 
+
+* `vic14yr` (visit child ~ 14 years)
+* `vim14yr` (visit mother ~ 14 years) [ORACLE?]
+* `vip14yr` (visit partner ~ 14 years) [ORACLE?]
+
+**Biosamples**
+
+* hair, blood...
+<!-- * `blc10yr` (blood child ~ 10 years) [DNAm]
+* `blm10yr` (blood mother ~ 10 years)
+* `hac10yr` (hair child ~ 10 years)
+* `ham10yr` (hair mother ~ 10 years)
+* `urc10yr` (urine child ~ 10 years)
+* `urm10yr` (urine mother ~ 10 years)
+* `nsc06yr` (nasal swab child ~ 10 years)
+* `fec06yr` (faeces child ~ 10 years)  -->
+
+**Records**
+
+* `rec13yr-app` ?? `apc13yr` ?? "tracking teens"
+
+:::
+
+:::{.callout-important title="17-22 years [TODO]" collapse="true"}
+:::
+
+:::{.callout-important title="23-25 years [TODO]" collapse="true"}
+:::
+
+## GuRu chatbot development
+Interactive knowledge base of the measurements in the Generation R study — manually curated by researches (--> method sections)
+
+Architecture: `RAG` system based on local LMM 
+
+Source *truth*:
+
+* one `YAML` file per measure *domain*
+* abbreviations `json`
+* sources `json` 
+* `references.bib`
+
+```
+measures/
+├── family_sociodemographics/
+│   ├── living_conditions.yml
+│   └── migration_background.yml
+├── biological_markers/
+│   ├── epigenetic.yml
+│   └── genetic.yml
+└── enviromental_exposure/
+│   └── air_pollution.yml      # 209 records, 16 domains
+│   └── genetic.yml
+└── sources.json
+└── abbreviations.json
+└── references.bib
+```
+
+Each file carries structured metadata *and* a verbatim description.
+
+### Design goals
+
+- Adding or editing a measure is a small, local, safe edit to one file.
+
+- **Stable citation.** Every retrieval hit maps to exactly one `id`;
+  `get_measure(depression)` always resolves to the same record.
+- **Instrument-aware.** Appending the abbreviation makes queries like
+  *"CBCL"* land, even when the description never spells it out.
+- **Parallel, conflict-free edits.** Two editors add measures as two new
+  files — no shared index to merge.
+- **Human-readable.** You can find, read and diff a measure by its name alone.
+
